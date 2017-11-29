@@ -9,12 +9,17 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("org.liquibase:liquibase-core:3.4.1")
+    	classpath("org.liquibase:liquibase-gradle-plugin:1.1.1")
+    	classpath("org.mariadb.jdbc:mariadb-java-client:2.2.0")
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'liquibase'
+
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -29,4 +34,21 @@ repositories {
 dependencies {
 	compile('org.springframework.shell:spring-shell-starter:2.0.0.M2')
 	compile('org.mariadb.jdbc:mariadb-java-client:2.1.2')
+}
+
+
+def changeLog = "$projectDir/sql/changelog.xml"
+
+task('dev') << {
+	println "executing dev"
+	liquibase {
+	    activities {
+	        main {
+	            changeLogFile changeLog
+	            url 'jdbc:mariadb://localhost:3306/zoolander'
+	            username 'ben'
+	            password 'stiller'
+	        }
+	    }
+	}    
 }
