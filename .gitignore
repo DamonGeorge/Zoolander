@@ -1,7 +1,8 @@
 /.gradle/
 /bin/
 
-
+debug.log
+spring-shell.log
 .DS_Store
 .classpath
 .gradle
