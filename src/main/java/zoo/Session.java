@@ -1,4 +1,4 @@
-package config;
+package zoo;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -47,14 +47,18 @@ public class Session {
 		
 		System.out.println("\n====== Welcome To The Zoo ======");
 		
-		log.info("Login of " + currentUser);
+		//FOR TESTING PURPOSES JUST CALL WORKER METHODS YOUR TESTING HERE
+		//ONCE YOUR DONE WITH THE METHOD, REMOVE IT FROM HERE AND MARK IT AS DONE
 		
-		String[] disabledCommands = {"--spring.shell.command.script.enabled=false", "--spring.shell.command.stacktrace.enabled=false"}; 
-        String[] fullArgs = StringUtils.concatenateStringArrays(args, disabledCommands);
 		
-        SpringApplication app = new SpringApplication(Session.class);
-        app.setBannerMode(Banner.Mode.OFF);
-        app.run(fullArgs);
+//		log.info("Login of " + currentUser);
+//		
+//		String[] disabledCommands = {"--spring.shell.command.script.enabled=false", "--spring.shell.command.stacktrace.enabled=false"}; 
+//        String[] fullArgs = StringUtils.concatenateStringArrays(args, disabledCommands);
+//		
+//        SpringApplication app = new SpringApplication(Session.class);
+//        app.setBannerMode(Banner.Mode.OFF);
+//        app.run(fullArgs);
 
 	}
 	
@@ -100,7 +104,7 @@ public class Session {
 					admin = result.getBoolean(2);
 					return true;
 				} else {
-					System.out.println("User " + username + "doesn't exist! Please Try Again");
+					System.out.println("User " + username + " doesn't exist! Please Try Again");
 					
 				}
 			}

@@ -1,4 +1,4 @@
-package config;
+package zoo;
 
 
 import org.jline.utils.AttributedString;
