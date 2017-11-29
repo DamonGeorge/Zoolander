@@ -1,13 +1,24 @@
 package config;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.util.StringUtils;
 
 @SpringBootApplication
 public class Session {
@@ -15,9 +26,105 @@ public class Session {
 	//Global connection and scanner
 	public static Connection conn;
 	public static Scanner scan;
+	public static String currentUser;
+	public static boolean admin;
+	public static Logger log;
 
 	
 	public static void main(String[] args) {
+		//Get Logger
+		getLogger();
+		//Get the input scanner
+		scan = new Scanner(System.in);
+
+		getDbConnection();
+		
+		if(!login()) {
+			System.out.println("Exiting...");
+			closeDbConnection();
+			return;
+		}
+		
+		System.out.println("\n====== Welcome To The Zoo ======");
+		
+		log.info("Login of " + currentUser);
+		
+		String[] disabledCommands = {"--spring.shell.command.script.enabled=false", "--spring.shell.command.stacktrace.enabled=false"}; 
+        String[] fullArgs = StringUtils.concatenateStringArrays(args, disabledCommands);
+		
+        SpringApplication app = new SpringApplication(Session.class);
+        app.setBannerMode(Banner.Mode.OFF);
+        app.run(fullArgs);
+
+	}
+	
+	
+	private static void getLogger() {
+		Logger logger = Logger.getLogger("Zoolander");
+		// suppress the logging output to the console
+        Logger rootLogger = Logger.getLogger("");
+        Handler[] handlers = rootLogger.getHandlers();
+        if (handlers[0] instanceof ConsoleHandler) {
+            rootLogger.removeHandler(handlers[0]);
+        }
+        
+        try {
+        	FileHandler file = new FileHandler("debug.log");
+        	file.setFormatter(new SimpleFormatter());
+			logger.addHandler(file);
+		} catch (IOException e) {
+			System.out.println("Couldn't get logger!");
+		} 
+        log = logger;
+        
+       
+	}
+	
+	private static boolean login() {
+		
+		PreparedStatement loginQuery = null;
+		ResultSet result = null;
+		int i = 0;
+				
+		try {
+			loginQuery = conn.prepareStatement(
+					   "select username, admin from user where username = ?");
+			for(i = 0; i < 3; i++) {
+				System.out.println("Username: ");
+				String username = scan.nextLine();
+				loginQuery.setString(1, username);
+				result = loginQuery.executeQuery();
+				//If a country with that code exists, close queries and return
+				if(result.next()) {
+					currentUser = result.getString(1);
+					admin = result.getBoolean(2);
+					return true;
+				} else {
+					System.out.println("User " + username + "doesn't exist! Please Try Again");
+					
+				}
+			}
+			return false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Something went wrong!");
+			return false;
+		} finally {
+			//close everything
+			try {
+				result.close();
+				loginQuery.close();
+			}catch(Exception e) {
+				//If closing errors out
+				e.printStackTrace();
+				System.out.println("Something went wrong!");
+				return false;
+			}
+		}
+				   
+	}
+	
+	private static void getDbConnection() {
 		try {	//Get database connection from properties file
 			Properties prop = new Properties();
 			FileInputStream in = new FileInputStream("application.properties");
@@ -39,9 +146,14 @@ public class Session {
 			e.printStackTrace();
 			return;
 		}
-
-		SpringApplication.run(Session.class, args);
-
+	}
+	
+	private static void closeDbConnection() {
+		try {
+			conn.close();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
