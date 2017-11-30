@@ -180,7 +180,91 @@ public class Employees {
     }
     
     
-    private static void printEmployeesAsciiTable(ResultSet result) {
+    public static void viewEmployee(String username) {
+    	PreparedStatement userQuery = null, animalQuery = null;
+		ResultSet userResult = null, animalResult = null;
+		TableModelBuilder<String> empBuilder = new TableModelBuilder<>();
+		TableModelBuilder<String> anBuilder = new TableModelBuilder<>();
+    	
+		empBuilder.addRow();
+    	empBuilder.addValue("Username").addValue("First Name").addValue("Last Name")
+    	.addValue("Email" ).addValue("Birthday").addValue("Salary").addValue("active").addValue("admin");	
+		
+    	anBuilder.addRow();
+    	anBuilder.addValue("Animal ID").addValue("Name").addValue("Species").addValue("Enclosure ID").addValue("Enclosure Name").addValue("Open");
+    	
+    	
+    	
+		try {
+			userQuery = Session.conn.prepareStatement(
+					   "SELECT username, first_name, last_name, email, birthday, salary, active, admin "
+					   + "FROM user WHERE username = ?");
+			userQuery.setString(1, username);
+			
+			
+			userResult = userQuery.executeQuery();
+			if(userResult.next())  {
+				empBuilder.addRow();
+				for(int i = 1; i <= 8; i++) {
+					empBuilder.addValue(userResult.getString(i));
+				}		
+				
+				TableBuilder table = new TableBuilder(empBuilder.build().transpose());
+				table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
+				System.out.println("Employee: ");
+				System.out.println(table.build().render(100));
+				
+				
+				animalQuery = Session.conn.prepareStatement(
+						"SELECT a.animal_id, a.name, a.species_name, e.enclosure_id, e.name, e.open "
+						+ "FROM animal a JOIN employee_training t USING (species_name) JOIN user u USING (username) JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id) "
+						+ "WHERE u.username = ?");
+				animalQuery.setString(1, username);
+				animalResult = animalQuery.executeQuery();
+				while(animalResult.next()) {
+					anBuilder.addRow();
+					for(int i = 1; i <= 6; i++) {
+						anBuilder.addValue(animalResult.getString(i));
+					}
+				}
+				
+				table = new TableBuilder(anBuilder.build());
+				table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
+				System.out.println("Animals: ");
+				System.out.println(table.build().render(100));
+				
+			} else 
+				System.out.println("No employee found...");
+			
+		} catch (SQLException e) {
+			Session.log.info("SQL Error: " + e.toString());
+			System.out.println("Something went wrong!");
+		} finally {
+			//close everything
+			try {
+				userResult.close();
+				userQuery.close();
+				animalResult.close();
+				animalQuery.close();
+			}catch(Exception e) {
+				//If closing errors out
+				Session.log.info("SQL Error: " + e.toString());
+				System.out.println("Something went wrong!");
+			}
+		}	
+    }
+    
+    
+    
+    
+    
+    
+    /**
+     * TODO: remove throws declaration???
+     * @param result
+     * @throws SQLException
+     */
+    private static void printEmployeesAsciiTable(ResultSet result) throws SQLException{
     	TableModelBuilder<String> builder = new TableModelBuilder<>();
 
     	builder.addRow();
@@ -191,25 +275,22 @@ public class Employees {
 		builder.addValue("Birthday");
 		builder.addValue("Salary");	
 		
-		try {
+//		try {
 			result.beforeFirst();
 			while(result.next()) {
 				builder.addRow();
-				builder.addValue(result.getString(1));
-				builder.addValue(result.getString(2));
-				builder.addValue(result.getString(3));
-				builder.addValue(result.getString(4));
-				builder.addValue(result.getString(5));
-				builder.addValue(result.getString(6));				
+				for(int i = 1; i <=6; i++ ){
+					builder.addValue(result.getString(i));
+				}			
 			}
 			
 			TableBuilder table = new TableBuilder(builder.build());
 			table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
 			System.out.println(table.build().render(100));
-		} catch (SQLException e) {
-			Session.log.info("SQL Error: " + e.toString());
-			System.out.println("Something went wrong!");
-		}
+//		} catch (SQLException e) {
+//			Session.log.info("SQL Error: " + e.toString());
+//			System.out.println("Something went wrong!");
+//		}
     }
     
 }
