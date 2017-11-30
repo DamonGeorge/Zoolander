@@ -48,9 +48,16 @@ public class Session {
 		System.out.println("\n====== Welcome To The Zoo ======");
 		
 		//FOR TESTING PURPOSES JUST CALL WORKER METHODS YOUR TESTING HERE
-		//ONCE YOUR DONE WITH THE METHOD, REMOVE IT FROM HERE AND MARK IT AS DONE
+		//ONCE YOUR DONE WITH THE METHOD, REMOVE IT FROM HERE AND WRITE ITS JAVADOC
 		//=======================================================================
 
+		
+		
+		
+	
+		
+		
+		
 		
 		
 		//=======================================================================
@@ -95,7 +102,7 @@ public class Session {
 				
 		try {
 			loginQuery = conn.prepareStatement(
-					   "select username, admin from user where username = ?");
+					   "select username, admin, active from user where username = ?");
 			for(i = 0; i < 3; i++) {
 				System.out.println("Username: ");
 				String username = scan.nextLine();
@@ -103,12 +110,15 @@ public class Session {
 				result = loginQuery.executeQuery();
 				//If a country with that code exists, close queries and return
 				if(result.next()) {
-					currentUser = result.getString(1);
-					admin = result.getBoolean(2);
-					return true;
+					if(!result.getBoolean(3)) {
+						System.out.println("User " + username + " isn't active! Please Try Again");
+					} else {
+						currentUser = result.getString(1);
+						admin = result.getBoolean(2);
+						return true;
+					}
 				} else {
 					System.out.println("User " + username + " doesn't exist! Please Try Again");
-					
 				}
 			}
 			return false;

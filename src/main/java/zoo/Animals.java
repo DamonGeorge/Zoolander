@@ -18,32 +18,42 @@ public class Animals {
 
 
 	/**
-	 * Done
+	 * List all animals the user handles (or all animals if admin)
 	 */
     public static void listAllAnimals() {
-    	PreparedStatement listQuery = null;
+    	PreparedStatement query = null;
 		ResultSet result = null;
 				
 		try {
-			listQuery = Session.conn.prepareStatement(
-					   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
-					   + "FROM animal a JOIN species s USING (species_name)");
-			result = listQuery.executeQuery();
+			if (Session.admin) {
+				query = Session.conn.prepareStatement(
+						   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
+						   + "FROM animal a JOIN species s USING (species_name)");
+			} else {
+				query = Session.conn.prepareStatement(
+						   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
+						   + "FROM animal a JOIN species s USING (species_name) JOIN employee_training t USING (species_name) "
+						   + "WHERE t.username = ?");
+				query.setString(1, Session.currentUser);
+			}
 			
-			printAnimalsAsciiTable(result);
-			
-		} catch (SQLException e) {
+			result = query.executeQuery();
+			if(result.next())
+				printAnimalsAsciiTable(result);
+			else {
+				System.out.println("No results found...");
+			}
+		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
 		} finally {
 			//close everything
 			try {
 				result.close();
-				listQuery.close();
+				query.close();
 			}catch(Exception e) {
 				//If closing errors out
-				Session.log.info("SQL Error: " + e.toString());
-				System.out.println("Something went wrong!");
+				Session.log.info("DB Closing Error: " + e.toString());
 			}
 		}	
     }   
@@ -58,25 +68,44 @@ public class Animals {
 		search = "%" + search.toLowerCase() + "%";
 		
 		try {
-			query = Session.conn.prepareStatement(
-					   "SELECT animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
-					   + "FROM animal a JOIN species s USING (species_name) "
-					   + "WHERE LOWER(a.animal_id) LIKE ? "
-					   + "OR LOWER(a.name) LIKE ? "
-					   + "OR LOWER(s.species_name) LIKE ? "
-					   + "OR LOWER(s.common_name) LIKE ? "
-					   + "OR LOWER(a.birthday) LIKE ? "
-					   + "OR LOWER(a.last_feeding) LIKE ?");
-			for(int i = 1; i<=6; i++) {
-				query.setString(i, search);
+			
+			if(Session.admin) {
+				query = Session.conn.prepareStatement(
+						   "SELECT animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
+						   + "FROM animal a JOIN species s USING (species_name) "
+						   + "WHERE LOWER(a.animal_id) LIKE ? "
+						   + "OR LOWER(a.name) LIKE ? "
+						   + "OR LOWER(s.species_name) LIKE ? "
+						   + "OR LOWER(s.common_name) LIKE ? "
+						   + "OR LOWER(a.birthday) LIKE ? "
+						   + "OR LOWER(a.last_feeding) LIKE ?");
+				for(int i = 1; i<=6; i++) {
+					query.setString(i, search);
+				}
+			} else {
+				query = Session.conn.prepareStatement(
+						   "SELECT animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
+						   + "FROM animal a JOIN species s USING (species_name) JOIN employee_training t USING (species_name)"
+						   + "WHERE t.username = ? AND "
+						   + "(LOWER(a.animal_id) LIKE ? "
+						   + "OR LOWER(a.name) LIKE ? "
+						   + "OR LOWER(s.species_name) LIKE ? "
+						   + "OR LOWER(s.common_name) LIKE ? "
+						   + "OR LOWER(a.birthday) LIKE ? "
+						   + "OR LOWER(a.last_feeding) LIKE ?) ");
+				query.setString(1, Session.currentUser);
+				for(int i = 1; i<=6; i++) {
+					query.setString(i+1, search);
+				}
 			}
+			
 			
 			result = query.executeQuery();
 			if(result.next()) 
 				printAnimalsAsciiTable(result);
 			else 
 				System.out.println("No results found...");
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
 		} finally {
@@ -86,8 +115,7 @@ public class Animals {
 				query.close();
 			}catch(Exception e) {
 				//If closing errors out
-				Session.log.info("SQL Error: " + e.toString());
-				System.out.println("Something went wrong!");
+				Session.log.info("DB Closing Error: " + e.toString());
 			}
 		}	
     }
@@ -121,7 +149,7 @@ public class Animals {
 				printAnimalsAsciiTable(result);
 			else 
 				System.out.println("No results found...");
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
 		} finally {
@@ -131,8 +159,7 @@ public class Animals {
 				query.close();
 			}catch(Exception e) {
 				//If closing errors out
-				Session.log.info("SQL Error: " + e.toString());
-				System.out.println("Something went wrong!");
+				Session.log.info("DB Closing Error: " + e.toString());
 			}
 		}	
     }
@@ -162,7 +189,7 @@ public class Animals {
 				printAnimalsAsciiTable(result);
 			else 
 				System.out.println("No results found...");
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
 		} finally {
@@ -172,8 +199,7 @@ public class Animals {
 				query.close();
 			}catch(Exception e) {
 				//If closing errors out
-				Session.log.info("SQL Error: " + e.toString());
-				System.out.println("Something went wrong!");
+				Session.log.info("DB Closing Error: " + e.toString());
 			}
 		}	
     }
