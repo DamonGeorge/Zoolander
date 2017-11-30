@@ -49,8 +49,10 @@ public class Session {
 		
 		//FOR TESTING PURPOSES JUST CALL WORKER METHODS YOUR TESTING HERE
 		//ONCE YOUR DONE WITH THE METHOD, REMOVE IT FROM HERE AND MARK IT AS DONE
+		//=======================================================================
 		
 		
+		//=======================================================================
 //		log.info("Login of " + currentUser);
 //		
 //		String[] disabledCommands = {"--spring.shell.command.script.enabled=false", "--spring.shell.command.stacktrace.enabled=false"}; 

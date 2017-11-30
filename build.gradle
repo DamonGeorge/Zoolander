@@ -39,16 +39,18 @@ dependencies {
 
 def changeLog = "$projectDir/sql/changelog.xml"
 
-task('dev') << {
-	println "executing dev"
-	liquibase {
-	    activities {
-	        main {
-	            changeLogFile changeLog
-	            url 'jdbc:mariadb://localhost:3306/zoolander'
-	            username 'ben'
-	            password 'stiller'
-	        }
-	    }
-	}    
+task('dev') {
+	doLast {
+		println "executing dev"
+		liquibase {
+		    activities {
+		        main {
+		            changeLogFile changeLog
+		            url 'jdbc:mariadb://localhost:3306/zoolander'
+		            username 'ben'
+		            password 'stiller'
+		        }
+		    }
+		}  
+	}  
 }
