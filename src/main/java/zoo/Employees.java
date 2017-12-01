@@ -219,7 +219,8 @@ public class Employees {
 		ResultSet userResult = null, animalResult = null;
 		TableModelBuilder<String> empBuilder = new TableModelBuilder<>();
 		TableModelBuilder<String> anBuilder = new TableModelBuilder<>();
-    	
+		TableModelBuilder<String> finalBuilder = new TableModelBuilder<>();
+		
 		empBuilder.addRow();
     	empBuilder.addValue("Username").addValue("First Name").addValue("Last Name")
     	.addValue("Email" ).addValue("Birthday").addValue("Salary").addValue("active").addValue("admin");	
@@ -227,7 +228,7 @@ public class Employees {
     	anBuilder.addRow();
     	anBuilder.addValue("Animal ID").addValue("Name").addValue("Species").addValue("Enclosure ID").addValue("Enclosure Name").addValue("Open");
     	
-    	
+    	finalBuilder.addRow();
     	
 		try {
 			userQuery = Session.conn.prepareStatement(
@@ -243,10 +244,7 @@ public class Employees {
 					empBuilder.addValue(userResult.getString(i));
 				}		
 				
-				TableBuilder table = new TableBuilder(empBuilder.build().transpose());
-				table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-				System.out.println("Employee: ");
-				System.out.println(table.build().render(100));
+				
 				
 				
 				animalQuery = Session.conn.prepareStatement(
@@ -262,10 +260,16 @@ public class Employees {
 					}
 				}
 				
-				table = new TableBuilder(anBuilder.build());
-				table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-				System.out.println("Animals: ");
-				System.out.println(table.build().render(100));
+				TableBuilder table1 = new TableBuilder(empBuilder.build().transpose());
+				table1.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
+				TableBuilder table2 = new TableBuilder(anBuilder.build());
+				table2.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
+				finalBuilder.addValue("Employee: \n" + table1.build().render(50));
+				finalBuilder.addValue("          ");
+				finalBuilder.addValue("Animals: \n" + table2.build().render(100));
+				TableBuilder table = new TableBuilder(finalBuilder.build());
+				System.out.println(table.build().render(200));
+				
 				
 			} else 
 				System.out.println("No employee found...");

@@ -54,7 +54,7 @@ public class Session {
 		
 		
 		
-	
+		Employees.viewEmployee("tdog");
 		
 		
 		
