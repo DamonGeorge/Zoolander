@@ -59,7 +59,7 @@ public class Animals {
     }   
     
     /**
-     * TODO: Want search terms in command or in this method
+     * TODO: check
      * @param search
      */
     public static void searchAnimalsByAnimal(String search) {
@@ -123,7 +123,7 @@ public class Animals {
     
     
     /**
-     * TODO: Want search terms in command or in this method
+     * TODO: Can regular users run this query??? no?
      * @param search
      */
     public static void searchAnimalByEmployee(String search) {
@@ -174,15 +174,30 @@ public class Animals {
 		search = "%" + search.toLowerCase() + "%";
 		
 		try {
-			query = Session.conn.prepareStatement(
-					   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding  "
-					   + "FROM animal a JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id)"
-					   + "WHERE LOWER(e.enclosure_id) LIKE ? "
-					   + "OR LOWER(e.name) LIKE ? "
-					   + "OR LOWER(e.environment) LIKE ? ");
-			for(int i = 1; i<=3; i++) {
-				query.setString(i, search);
+			if(Session.admin) {
+				query = Session.conn.prepareStatement(
+						   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding  "
+						   + "FROM animal a JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id)"
+						   + "WHERE LOWER(e.enclosure_id) LIKE ? "
+						   + "OR LOWER(e.name) LIKE ? "
+						   + "OR LOWER(e.environment) LIKE ? ");
+				for(int i = 1; i<=3; i++) {
+					query.setString(i, search);
+				}
+			} else {
+				query = Session.conn.prepareStatement(
+						   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding  "
+						   + "FROM animal a JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id) JOIN employee_training t USING (species_name)"
+						   + "WHERE t.username = ? AND "
+						   + "(LOWER(e.enclosure_id) LIKE ? "
+						   + "OR LOWER(e.name) LIKE ? "
+						   + "OR LOWER(e.environment) LIKE ? )");
+				query.setString(1, Session.currentUser);
+				for(int i = 1; i<=3; i++) {
+					query.setString(i+1, search);
+				}
 			}
+			
 			
 			result = query.executeQuery();
 			if(result.next()) 
@@ -204,86 +219,7 @@ public class Animals {
 		}	
     }
     
-    /* TODO: Change from employee to animal
-    public static void viewEmployee(String username) {
-    	PreparedStatement userQuery = null, animalQuery = null;
-		ResultSet userResult = null, animalResult = null;
-		TableModelBuilder<String> empBuilder = new TableModelBuilder<>();
-		TableModelBuilder<String> anBuilder = new TableModelBuilder<>();
-    	
-		empBuilder.addRow();
-    	empBuilder.addValue("Username").addValue("First Name").addValue("Last Name")
-    	.addValue("Email" ).addValue("Birthday").addValue("Salary").addValue("active").addValue("admin");	
-		
-    	anBuilder.addRow();
-    	anBuilder.addValue("Animal ID").addValue("Name").addValue("Species").addValue("Enclosure ID").addValue("Enclosure Name").addValue("Open");
-    	
-    	
-    	
-		try {
-			userQuery = Session.conn.prepareStatement(
-					   "SELECT username, first_name, last_name, email, birthday, salary, active, admin "
-					   + "FROM user WHERE username = ?");
-			userQuery.setString(1, username);
-			
-			
-			userResult = userQuery.executeQuery();
-			if(userResult.next())  {
-				empBuilder.addRow();
-				for(int i = 1; i <= 8; i++) {
-					empBuilder.addValue(userResult.getString(i));
-				}		
-				
-				TableBuilder table = new TableBuilder(empBuilder.build().transpose());
-				table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-				System.out.println("Employee: ");
-				System.out.println(table.build().render(100));
-				
-				
-				animalQuery = Session.conn.prepareStatement(
-						"SELECT a.animal_id, a.name, a.species_name, e.enclosure_id, e.name, e.open "
-						+ "FROM animal a JOIN employee_training t USING (species_name) JOIN user u USING (username) JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id) "
-						+ "WHERE u.username = ?");
-				animalQuery.setString(1, username);
-				animalResult = animalQuery.executeQuery();
-				while(animalResult.next()) {
-					anBuilder.addRow();
-					for(int i = 1; i <= 6; i++) {
-						anBuilder.addValue(animalResult.getString(i));
-					}
-				}
-				
-				table = new TableBuilder(anBuilder.build());
-				table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-				System.out.println("Animals: ");
-				System.out.println(table.build().render(100));
-				
-			} else 
-				System.out.println("No employee found...");
-			
-		} catch (SQLException e) {
-			Session.log.info("SQL Error: " + e.toString());
-			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
-			try {
-				userResult.close();
-				userQuery.close();
-				animalResult.close();
-				animalQuery.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("SQL Error: " + e.toString());
-				System.out.println("Something went wrong!");
-			}
-		}	
-    }
-    */
-    
-    
-    
-    
-    
+
     /**
      * TODO: remove throws declaration???
      * @param result
@@ -317,5 +253,120 @@ public class Animals {
 //			System.out.println("Something went wrong!");
 //		}
     }
+    
+    
+    /**
+     * TODO: Check
+     * @param username
+     * @return
+     */
+    public static boolean animalExists(String animalId) {
+    	PreparedStatement query = null;
+		ResultSet result = null;
+		
+		try {
+			query = Session.conn.prepareStatement(
+					   "SELECT animal_id "
+					   + "FROM animal WHERE animal_id = ?");
+			query.setString(1, animalId);
+			result = query.executeQuery();
+			if(result.next()) 
+				return true;
+			else 
+				return false;
+			
+		} catch (Exception e) {
+			Session.log.info("SQL Error: " + e.toString());
+			System.out.println("Something went wrong!");
+		} finally {
+			//close everything
+			try {
+				result.close();
+				query.close();
+			}catch(Exception e) {
+				//If closing errors out
+				Session.log.info("DB Closing Error: " + e.toString());
+			}
+		}
+		return false;
+    }
+    
+    /**
+     * TODO: What do we want to see from this query
+     * @param username
+     */
+    public static void viewAnimal(String animalId) {
+    	PreparedStatement animalQuery = null, speciesQuery = null;
+		ResultSet animalResult = null, speciesResult = null;
+		TableModelBuilder<String> anBuilder = new TableModelBuilder<>();
+		TableModelBuilder<String> spBuilder = new TableModelBuilder<>();
+    	
+		anBuilder.addRow();
+    	anBuilder.addValue("ID").addValue("Name").addValue("Birthday").addValue("Food Quantity" ).addValue("Last Feeding");
+    	
+		
+    	spBuilder.addRow();
+    	spBuilder.addValue("Species").addValue("Common Name").addValue("Enclosure ID").addValue("Description");
+    	
+    	
+    	
+		try {
+			animalQuery = Session.conn.prepareStatement(
+						"SELECT a.animal_id, a.name, a.birthday, a.food_quantity, a.last_feeding  "
+					   + "FROM animal WHERE animal_id = ?");
+			animalQuery.setString(1, animalId);
+			
+			
+			animalResult = animalQuery.executeQuery();
+			if(animalResult.next())  {
+				anBuilder.addRow();
+				for(int i = 1; i <= 8; i++) {
+					anBuilder.addValue(animalResult.getString(i));
+				}		
+				
+				TableBuilder table = new TableBuilder(anBuilder.build().transpose());
+				table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
+				System.out.println("Animal: ");
+				System.out.println(table.build().render(100));
+				
+				
+//				speciesQuery = Session.conn.prepareStatement(
+//						"SELECT a.animal_id, a.name, a.species_name, e.enclosure_id, e.name, e.open "
+//						+ "FROM animal a JOIN employee_training t USING (species_name) JOIN user u USING (username) JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id) "
+//						+ "WHERE u.username = ?");
+//				speciesQuery.setString(1, username);
+//				speciesResult = speciesQuery.executeQuery();
+//				while(speciesResult.next()) {
+//					spBuilder.addRow();
+//					for(int i = 1; i <= 6; i++) {
+//						spBuilder.addValue(speciesResult.getString(i));
+//					}
+//				}
+//				
+//				table = new TableBuilder(spBuilder.build());
+//				table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
+//				System.out.println("Animals: ");
+//				System.out.println(table.build().render(100));
+				
+			} else 
+				System.out.println("No employee found...");
+			
+		} catch (Exception e) {
+			Session.log.info("SQL Error: " + e.toString());
+			System.out.println("Something went wrong!");
+		} finally {
+			//close everything
+			try {
+				animalResult.close();
+				animalQuery.close();
+				speciesResult.close();
+				speciesQuery.close();
+			}catch(Exception e) {
+				//If closing errors out
+				Session.log.info("DB Closing Error: " + e.toString());
+			}
+		}	
+    }
+    
     
 }
