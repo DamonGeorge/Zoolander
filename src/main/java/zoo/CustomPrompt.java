@@ -10,7 +10,10 @@ public class CustomPrompt implements PromptProvider {
 
         @Override
         public AttributedString getPrompt() {
-               return new AttributedString("zoo>");
+        	Session.terminalWidth = Session.terminal.getWidth() - 10;
+        	if(Session.terminalWidth < 80)
+        		System.out.println("Please increase your window size!");
+        	return new AttributedString("zoo>");
         }
 
 }

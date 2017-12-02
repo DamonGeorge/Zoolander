@@ -1,0 +1,4 @@
+Dec 01, 2017 4:04:34 PM zoo.Animals viewAnimal
+INFO: DB Closing Error: java.lang.NullPointerException
+Dec 01, 2017 4:04:34 PM zoo.Session main
+INFO: Login of tdog

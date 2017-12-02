@@ -27,7 +27,7 @@ public class Employees {
 		try {
 			listQuery = Session.conn.prepareStatement(
 					   "SELECT username, first_name, last_name, email, birthday, salary "
-					   + "FROM user");
+					   + "FROM employee");
 			result = listQuery.executeQuery();
 			
 			printEmployeesAsciiTable(result);
@@ -59,7 +59,7 @@ public class Employees {
 		try {
 			query = Session.conn.prepareStatement(
 					   "SELECT username, first_name, last_name, email, birthday, salary "
-					   + "FROM user "
+					   + "FROM employee "
 					   + "WHERE LOWER(username) LIKE ? "
 					   + "OR LOWER(first_name) LIKE ? "
 					   + "OR LOWER(last_name) LIKE ? "
@@ -104,7 +104,7 @@ public class Employees {
 		try {
 			query = Session.conn.prepareStatement(
 					   "SELECT u.username, u.first_name, u.last_name, u.email, u.birthday, u.salary "
-					   + "FROM user u JOIN employee_training t USING (username) JOIN Animal a USING (species_name) JOIN Species s USING (species_name)"
+					   + "FROM employee u JOIN employee_training t USING (username) JOIN Animal a USING (species_name) JOIN Species s USING (species_name)"
 					   + "WHERE LOWER(a.animal_id) LIKE ? "
 					   + "OR LOWER(a.name) LIKE ? "
 					   + "OR LOWER(a.species_name) LIKE ? "
@@ -147,7 +147,7 @@ public class Employees {
 		try {
 			query = Session.conn.prepareStatement(
 					   "SELECT u.username, u.first_name, u.last_name, u.email, u.birthday, u.salary "
-					   + "FROM user u JOIN employee_training t USING (username) JOIN species USING (species_name) JOIN enclosure e USING (enclosure_id)"
+					   + "FROM employee u JOIN employee_training t USING (username) JOIN species USING (species_name) JOIN enclosure e USING (enclosure_id)"
 					   + "WHERE LOWER(e.enclosure_id) LIKE ? "
 					   + "OR LOWER(e.name) LIKE ? "
 					   + "OR LOWER(e.environment) LIKE ? ");
@@ -203,7 +203,7 @@ public class Employees {
 			
 			TableBuilder table = new TableBuilder(builder.build());
 			table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-			System.out.println(table.build().render(100));
+			System.out.println(table.build().render(Session.terminalWidth));
 //		} catch (SQLException e) {
 //			Session.log.info("SQL Error: " + e.toString());
 //			System.out.println("Something went wrong!");
@@ -233,7 +233,7 @@ public class Employees {
 		try {
 			userQuery = Session.conn.prepareStatement(
 					   "SELECT username, first_name, last_name, email, birthday, salary, active, admin "
-					   + "FROM user WHERE username = ?");
+					   + "FROM employee WHERE username = ?");
 			userQuery.setString(1, username);
 			
 			
@@ -249,7 +249,7 @@ public class Employees {
 				
 				animalQuery = Session.conn.prepareStatement(
 						"SELECT a.animal_id, a.name, a.species_name, e.enclosure_id, e.name, e.open "
-						+ "FROM animal a JOIN employee_training t USING (species_name) JOIN user u USING (username) JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id) "
+						+ "FROM animal a JOIN employee_training t USING (species_name) JOIN employee u USING (username) JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id) "
 						+ "WHERE u.username = ?");
 				animalQuery.setString(1, username);
 				animalResult = animalQuery.executeQuery();
@@ -264,11 +264,11 @@ public class Employees {
 				table1.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
 				TableBuilder table2 = new TableBuilder(anBuilder.build());
 				table2.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-				finalBuilder.addValue("Employee: \n" + table1.build().render(50));
+				finalBuilder.addValue("Employee: \n" + table1.build().render(Session.terminalWidth/3));
 				finalBuilder.addValue("          ");
-				finalBuilder.addValue("Animals: \n" + table2.build().render(100));
+				finalBuilder.addValue("Animals: \n" + table2.build().render(Session.terminalWidth*2/3));
 				TableBuilder table = new TableBuilder(finalBuilder.build());
-				System.out.println(table.build().render(200));
+				System.out.println(table.build().render(Session.terminalWidth));
 				
 				
 			} else 
@@ -303,7 +303,7 @@ public class Employees {
 		try {
 			userQuery = Session.conn.prepareStatement(
 					   "SELECT username "
-					   + "FROM user WHERE username = ?");
+					   + "FROM employee WHERE username = ?");
 			userQuery.setString(1, username);
 			userResult = userQuery.executeQuery();
 			if(userResult.next()) 
@@ -343,7 +343,7 @@ public class Employees {
     	try {
 			
 			query = Session.conn.prepareStatement(
-					   "UPDATE user "
+					   "UPDATE employee "
 					   + "SET username = ?, first_name = ?, last_name = ?, birthday = ?, "
 					   + "email = ?, salary = ?, active = ?, admin = ? "  
 					   + "WHERE username = ?");
@@ -385,7 +385,7 @@ public class Employees {
 		try {
 			
 			query = Session.conn.prepareStatement(
-					   "UPDATE user SET " + attribute + " = ? WHERE username = ?");
+					   "UPDATE employee SET " + attribute + " = ? WHERE username = ?");
 				
 			query.setString(1, value);
 			query.setString(2, username);
@@ -420,7 +420,7 @@ public class Employees {
     	try {
 			
 			query = Session.conn.prepareStatement(
-					   "INSERT INTO user VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					   "INSERT INTO employee VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 				
 			for(int i = 1; i <= 9; i++) {
 				query.setString(i, newValues[i-1]);

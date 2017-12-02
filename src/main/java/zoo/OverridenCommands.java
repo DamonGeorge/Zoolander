@@ -1,7 +1,5 @@
 package zoo;
 
-import java.sql.SQLException;
-
 import org.springframework.shell.ExitRequest;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -14,9 +12,10 @@ public class OverridenCommands implements Quit.Command {
 	public void quit() {
     	try {
         	Session.conn.close();
-        } catch(SQLException e) {
+        	Session.terminal.close();
+        } catch(Exception e) {
         	//If closing errors out
-			Session.log.info("Error closing DB Connection: " + e.toString());
+			Session.log.info("Error quiting application: " + e.toString());
 			System.out.println("Something went wrong!");
         }
     	

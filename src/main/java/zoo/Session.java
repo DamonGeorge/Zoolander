@@ -15,6 +15,8 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,6 +31,8 @@ public class Session {
 	public static String currentUser;
 	public static boolean admin;
 	public static Logger log;
+	public static Terminal terminal;
+	public static int terminalWidth;
 
 	
 	public static void main(String[] args) {
@@ -39,25 +43,21 @@ public class Session {
 
 		getDbConnection();
 		
+		getTerminal();
+		
 		if(!login()) {
 			System.out.println("Exiting...");
 			closeDbConnection();
 			return;
 		}
 		
+		
+		
 		System.out.println("\n====== Welcome To The Zoo ======");
 		
 		//FOR TESTING PURPOSES JUST CALL WORKER METHODS YOUR TESTING HERE
 		//ONCE YOUR DONE WITH THE METHOD, REMOVE IT FROM HERE AND WRITE ITS JAVADOC
 		//=======================================================================
-
-		
-		
-		
-		Employees.viewEmployee("tdog");
-		
-		
-		
 		
 		
 		//=======================================================================
@@ -94,6 +94,18 @@ public class Session {
        
 	}
 	
+	private static void getTerminal() {
+		try {
+			terminal = TerminalBuilder.terminal();
+			terminalWidth = terminal.getWidth() - 10;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			log.warning("Error finding terminal dimensions" + e.toString());
+			System.out.println("Couldn't initialize terminal");
+		}
+	}
+	
+	
 	private static boolean login() {
 		
 		PreparedStatement loginQuery = null;
@@ -102,7 +114,7 @@ public class Session {
 				
 		try {
 			loginQuery = conn.prepareStatement(
-					   "select username, admin, active from user where username = ?");
+					   "select username, admin, active from employee where username = ?");
 			for(i = 0; i < 3; i++) {
 				System.out.println("Username: ");
 				String username = scan.nextLine();

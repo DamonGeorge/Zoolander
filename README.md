@@ -15,7 +15,7 @@ https://github.com/spring-projects/spring-shell/tree/master/spring-shell-table/s
 - run `gradle wrapper`
 
 ## To run project
-- update with liquibase `gradle dev update`
+- source the database create and insert sql scripts in mariadb
 - build with `gradle build`
 - run with `java -jar build/libs/Zoolander-0.0.1-SNAPSHOT.jar`
 
