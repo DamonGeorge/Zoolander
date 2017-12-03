@@ -366,7 +366,48 @@ public class Animals {
     }
     
     
-    
+
+    /**
+     * TODO: Check
+     * TODO: check if species exists
+     * @param oldId
+     * @param newValues
+     */
+    public static void updateAnimal(String oldId, String[] newValues) {
+    	if(!animalExists(oldId)) {
+    		System.out.println("Animal with id " + oldId + " doesn't exist!");
+    		return;
+    	}
+    	
+    	PreparedStatement query = null;
+    	
+    	try {
+			
+			query = Session.conn.prepareStatement(
+					   "UPDATE animal "
+					   + "SET name = ?, description = ?, species_name = ?, birthday = ?, "
+					   + "food_quantity = ?, last_feeding = ? "  
+					   + "WHERE animal_id = ?");
+				
+			for(int i = 1; i <= 6; i++) {
+				query.setString(i, newValues[i-1]);
+			}
+			query.setString(7, oldId);
+			query.executeUpdate();
+			
+    	} catch (Exception e) {
+			Session.log.info("SQL Error: " + e.toString());
+			System.out.println("Something went wrong!");
+		} finally {
+			//close everything
+			try {
+				query.close();
+			}catch(Exception e) {
+				//If closing errors out
+				Session.log.info("DB Closing Error: " + e.toString());
+			}
+		}	
+    }
     
     
     
