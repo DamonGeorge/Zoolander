@@ -66,6 +66,7 @@ public class Enclosures {
     public static boolean enclosureExists(String enclosureId) {
     	PreparedStatement query = null;
 		ResultSet result = null;
+		boolean exists = false;
 		
 		try {
 			query = Session.conn.prepareStatement(
@@ -74,9 +75,7 @@ public class Enclosures {
 			query.setString(1, enclosureId);
 			result = query.executeQuery();
 			if(result.next()) 
-				return true;
-			else 
-				return false;
+				exists = true;
 			
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
@@ -91,7 +90,7 @@ public class Enclosures {
 				Session.log.info("DB Closing Error: " + e.toString());
 			}
 		}
-		return false;
+		return exists;
     }
     
     
