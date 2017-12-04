@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.springframework.shell.table.ArrayTableModel;
 import org.springframework.shell.table.BorderStyle;
 import org.springframework.shell.table.TableBuilder;
 import org.springframework.shell.table.TableModelBuilder;
@@ -30,11 +29,12 @@ public class Employees {
 					   + "FROM employee");
 			result = listQuery.executeQuery();
 			
-			printEmployeesAsciiTable(result);
+			TableBuilding.printBasicTable(TableBuilding.getAsciiTable(result, false));
 			
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
+			e.printStackTrace();
 		} finally {
 			//close everything
 			try {
