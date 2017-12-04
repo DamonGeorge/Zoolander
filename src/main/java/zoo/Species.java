@@ -66,6 +66,7 @@ public class Species {
     public static boolean speciesExists(String speciesName) {
     	PreparedStatement query = null;
 		ResultSet result = null;
+		boolean exists = false;
 		
 		try {
 			query = Session.conn.prepareStatement(
@@ -74,9 +75,7 @@ public class Species {
 			query.setString(1, speciesName);
 			result = query.executeQuery();
 			if(result.next()) 
-				return true;
-			else 
-				return false;
+				exists = true;
 			
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
@@ -91,7 +90,7 @@ public class Species {
 				Session.log.info("DB Closing Error: " + e.toString());
 			}
 		}
-		return false;
+		return exists;
     }
     
     

@@ -39,44 +39,36 @@ public class Food {
 		}
 	}
 	
-	public static void printFoodAsciiTable(ResultSet result) throws SQLException {
-		TableModelBuilder<String> builder = new TableModelBuilder();
+	public static boolean foodExists(int id){
+		PreparedStatement query = null;
+		ResultSet result = null;
+		boolean exists = false;
 		
-		ResultSetMetaData rsmd = result.getMetaData();
-		
-		
-		builder.addRow();
-		
-		for(int i=1; i<=rsmd.getColumnCount(); i++){
-			builder.addValue(rsmd.getColumnName(i));
-		}
-		
-		
-		//builder.addValue("Food Id");
-		//builder.addValue("Name");
-		//builder.addValue("Brand");
-		//builder.addValue("Pounds");
-		//builder.addValue("Cost/Pound");
-		
-//		try {
-			result.beforeFirst();
-			while(result.next()) {
-				builder.addRow();
-				for(int i=1; i<6; i++){
-					builder.addValue(result.getString(i));
-				}
-			}
+		try {
+			query = Session.conn.prepareStatement(
+					"SELECT food_id "
+					+ "FROM food WHERE food_id=?");
+			query.setInt(1, id);
+			result = query.executeQuery();
 			
-			TableBuilder table = new TableBuilder(builder.build());
-			table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-			System.out.println(table.build().render(Session.terminalWidth));
-//		} catch (SQLException e) {
-//			Session.log.info("SQL Error: " + e.toString());
-//			System.out.println("Something went wrong!");
-//		}
-		
+			if(result.next())
+				exists = true;
+			
+		} catch (Exception e) {
+			Session.log.info("SQL Error: " + e.toString());
+			System.out.println("Something went wrong!");
+		} finally {
+			//close everything
+			try {
+				result.close();
+				query.close();
+			}catch(Exception e) {
+				//If closing errors out
+				Session.log.info("DB Closing Error: " + e.toString());
+			}
+		}
+		return exists;
 	}
-	
 	
 	
 }

@@ -299,6 +299,7 @@ public class Employees {
     public static boolean employeeExists(String username) {
     	PreparedStatement userQuery = null;
 		ResultSet userResult = null;
+		boolean exists = false;
 		
 		try {
 			userQuery = Session.conn.prepareStatement(
@@ -307,9 +308,7 @@ public class Employees {
 			userQuery.setString(1, username);
 			userResult = userQuery.executeQuery();
 			if(userResult.next()) 
-				return true;
-			else 
-				return false;
+				exists = true;
 			
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
@@ -324,7 +323,7 @@ public class Employees {
 				Session.log.info("DB Closing Error: " + e.toString());
 			}
 		}
-		return false;
+		return exists;
     }
     
     /**
