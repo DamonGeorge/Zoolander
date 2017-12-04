@@ -22,7 +22,9 @@ public class Food {
 					+ "FROM food");
 			result = listQuery.executeQuery();
 			
-			TableBuilding.printAsciiTable(result);
+			TableBuilder table = TableBuilding.getAsciiTable(result, false);
+			table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
+			System.out.println(table.build().render(Session.terminalWidth));
 			
 		} catch (Exception e) {
 			Session.log.info("SQL Error" + e.toString());

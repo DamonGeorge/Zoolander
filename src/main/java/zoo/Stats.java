@@ -13,7 +13,7 @@ import org.springframework.shell.table.TableModelBuilder;
  * Employees: trainings to renew, salary stats (max, min, average, monthly)
  * Animals: # of species, # of animals per species, 
  * Enclosures: # of animals, # enclosures, open vs. closed
- * Food: quantities, ones that need to be purchased, ...
+ * Food: quantities, ones that need to be purchased
  *
  * @author damongeorge
  *
