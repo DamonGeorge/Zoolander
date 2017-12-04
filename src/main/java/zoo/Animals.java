@@ -39,10 +39,10 @@ public class Animals {
 			
 			result = query.executeQuery();
 			if(result.next())
-				printAnimalsAsciiTable(result);
-			else {
+				TableBuilding.printBasicTable(result);
+			else 
 				System.out.println("No results found...");
-			}
+				
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
@@ -102,7 +102,7 @@ public class Animals {
 			
 			result = query.executeQuery();
 			if(result.next()) 
-				printAnimalsAsciiTable(result);
+				TableBuilding.printBasicTable(result);
 			else 
 				System.out.println("No results found...");
 		} catch (Exception e) {
@@ -146,7 +146,7 @@ public class Animals {
 			
 			result = query.executeQuery();
 			if(result.next()) 
-				printAnimalsAsciiTable(result);
+				TableBuilding.printBasicTable(result);
 			else 
 				System.out.println("No results found...");
 		} catch (Exception e) {
@@ -200,7 +200,7 @@ public class Animals {
 			
 			result = query.executeQuery();
 			if(result.next()) 
-				printAnimalsAsciiTable(result);
+				TableBuilding.printBasicTable(result);
 			else 
 				System.out.println("No results found...");
 		} catch (Exception e) {
@@ -216,41 +216,6 @@ public class Animals {
 				Session.log.info("DB Closing Error: " + e.toString());
 			}
 		}	
-    }
-    
-
-    /**
-     * TODO: remove throws declaration???
-     * @param result
-     * @throws SQLException
-     */
-    private static void printAnimalsAsciiTable(ResultSet result) throws SQLException{
-    	TableModelBuilder<String> builder = new TableModelBuilder<>();
-
-    	builder.addRow();
-		builder.addValue("Animal ID");
-		builder.addValue("Name");
-		builder.addValue("Species");
-		builder.addValue("Common Name");
-		builder.addValue("Birthday" );
-		builder.addValue("Last Feeding");
-		
-//		try {
-			result.beforeFirst();
-			while(result.next()) {
-				builder.addRow();
-				for(int i = 1; i <=6; i++ ){
-					builder.addValue(result.getString(i));
-				}			
-			}
-			
-			TableBuilder table = new TableBuilder(builder.build());
-			table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-			System.out.println(table.build().render(Session.terminalWidth));
-//		} catch (SQLException e) {
-//			Session.log.info("SQL Error: " + e.toString());
-//			System.out.println("Something went wrong!");
-//		}
     }
     
     
@@ -296,19 +261,6 @@ public class Animals {
     public static void viewAnimal(String animalId) {
     	PreparedStatement animalQuery = null;
 		ResultSet animalResult = null;
-		TableModelBuilder<String> anBuilder = new TableModelBuilder<>();
-		TableModelBuilder<String> spBuilder = new TableModelBuilder<>();
-    	TableModelBuilder<String> finalBuilder = new TableModelBuilder<>();
-    	
-		anBuilder.addRow();
-    	anBuilder.addValue("ID").addValue("Name").addValue("Birthday").addValue("Food Quantity" ).addValue("Last Feeding");
-    	
-		
-    	spBuilder.addRow();
-    	spBuilder.addValue("Species").addValue("Common Name").addValue("Enclosure ID").addValue("Description");
-    	
-    	finalBuilder.addRow();
-    	
     	
 		try {
 			animalQuery = Session.conn.prepareStatement(
@@ -319,32 +271,15 @@ public class Animals {
 			animalResult = animalQuery.executeQuery();
 			
 			if(animalResult.next())  {
-				anBuilder.addRow();
-				anBuilder.addValue(animalResult.getString("animal_id"));	
-				anBuilder.addValue(animalResult.getString("name"));	
-				anBuilder.addValue(animalResult.getString("birthday"));	
-				anBuilder.addValue(animalResult.getString("food_quantity"));	
-				anBuilder.addValue(animalResult.getString("last_feeding"));	
-				
-				spBuilder.addRow();
-				spBuilder.addValue(animalResult.getString("species_name"));
-				spBuilder.addValue(animalResult.getString("common_name"));
-				spBuilder.addValue(animalResult.getString("enclosure_id"));
-				spBuilder.addValue(animalResult.getString("s.description"));
-				
-				TableBuilder animalTable = new TableBuilder(anBuilder.build().transpose());
-				animalTable.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
+				int animalColumns[] = {2,3,4,5,6,7};
+				int speciesColumns[] = {1,8,9,10};
+				TableBuilder table1 = TableBuilding.getAsciiTable(animalResult, true, animalColumns);
+				TableBuilder table2 = TableBuilding.getAsciiTable(animalResult, true, speciesColumns);
 
-				TableBuilder speciesTable = new TableBuilder(spBuilder.build().transpose());
-				speciesTable.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-				
-				finalBuilder.addValue("Animal: \n" + animalTable.build().render(Session.terminalWidth/2)
-						+ "\nDescription: \n" + animalResult.getString("a.description"));
-				finalBuilder.addValue("          ");
-				finalBuilder.addValue("Species: \n" + speciesTable.build().render(Session.terminalWidth/2));
-				
-				TableBuilder finalTable = new TableBuilder(finalBuilder.build());
-				System.out.println(finalTable.build().render(Session.terminalWidth));
+				table1.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
+				table2.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
+				TableBuilding.printDoubleTable(table1, "Animal: ", table2, "Species: ", Session.terminalWidth/2);
+
 				
 			} else 
 				System.out.println("No employee found...");

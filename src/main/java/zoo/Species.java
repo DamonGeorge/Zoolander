@@ -39,7 +39,7 @@ public class Species {
 			
 			result = query.executeQuery();
 			if(result.next())
-				printSpeciesAsciiTable(result);
+				TableBuilding.printBasicTable(result);
 			else {
 				System.out.println("No results found...");
 			}
@@ -93,37 +93,5 @@ public class Species {
 		return exists;
     }
     
-    
-    
-    /**
-     * TODO: remove throws declaration???
-     * @param result
-     * @throws SQLException
-     */
-    private static void printSpeciesAsciiTable(ResultSet result) throws SQLException{
-    	TableModelBuilder<String> builder = new TableModelBuilder<>();
 
-    	builder.addRow();
-		builder.addValue("Species Name");
-		builder.addValue("Common Name");
-		builder.addValue("Enclosure ID");
-		builder.addValue("Description");
-		
-//		try {
-			result.beforeFirst();
-			while(result.next()) {
-				builder.addRow();
-				for(int i = 1; i <=4; i++ ){
-					builder.addValue(result.getString(i));
-				}			
-			}
-			
-			TableBuilder table = new TableBuilder(builder.build());
-			table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-			System.out.println(table.build().render(Session.terminalWidth));
-//		} catch (SQLException e) {
-//			Session.log.info("SQL Error: " + e.toString());
-//			System.out.println("Something went wrong!");
-//		}
-    }
 }
