@@ -34,6 +34,10 @@ public class TableBuilding {
 			return new TableBuilder(builder.build());
 	}
 	
+	public static void printBasicTable(ResultSet result) throws SQLException {
+		printBasicTable(getAsciiTable(result, false));
+	}
+	
 	public static void printBasicTable(TableBuilder table) {
 		table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
 		System.out.println(table.build().render(Session.terminalWidth));

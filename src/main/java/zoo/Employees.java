@@ -29,7 +29,7 @@ public class Employees {
 					   + "FROM employee");
 			result = listQuery.executeQuery();
 			
-			TableBuilding.printBasicTable(TableBuilding.getAsciiTable(result, false));
+			TableBuilding.printBasicTable(result);
 			
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
