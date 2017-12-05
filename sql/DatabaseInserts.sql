@@ -2,8 +2,8 @@
 
 
 INSERT INTO employee VALUES 
-('tdog','Anthony','Niehuser', '1996-09-09', 'tdog@gmail.com', '$2a$10$c.GIMd7DRCdrt4EmRj.dYuxDd9kwnIgbalixiCZJWD6k2CgIq/o/a', 1000000.00, 1, 1),
-('bro','Damon','George','1995-06-04', 'dlkj@ldkjf','$2a$10$c.GIMd7DRCdrt4EmRj.dYuxDd9kwnIgbalixiCZJWD6k2CgIq/o/a', 50000, 1, 0);
+('tdog','Anthony','Niehuser', '1996-09-09', 'tdog@gmail.com', 1000000.00, 1, 1),
+('bro','Damon','George','1995-06-04', 'dlkj@ldkjf', 50000, 1, 0);
 
 INSERT INTO enclosure VALUES 
 (1, 'Arctic Enclosure', 'Arctic', 1);

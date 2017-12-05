@@ -69,10 +69,8 @@ public class Employees {
 			}
 			
 			result = query.executeQuery();
-			if(result.next()) 
-				TableBuilding.printBasicTable(result);
-			else 
-				System.out.println("No results found...");
+			TableBuilding.printBasicTable(result);
+		
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
@@ -113,10 +111,8 @@ public class Employees {
 			}
 			
 			result = query.executeQuery();
-			if(result.next()) 
-				TableBuilding.printBasicTable(result);
-			else 
-				System.out.println("No results found...");
+			TableBuilding.printBasicTable(result);
+		
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
@@ -154,10 +150,8 @@ public class Employees {
 			}
 			
 			result = query.executeQuery();
-			if(result.next()) 
-				TableBuilding.printBasicTable(result);
-			else 
-				System.out.println("No results found...");
+			TableBuilding.printBasicTable(result);
+			
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
@@ -354,9 +348,9 @@ public class Employees {
     	try {
 			
 			query = Session.conn.prepareStatement(
-					   "INSERT INTO employee VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					   "INSERT INTO employee VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 				
-			for(int i = 1; i <= 9; i++) {
+			for(int i = 1; i <= 8; i++) {
 				query.setString(i, newValues[i-1]);
 			}
 

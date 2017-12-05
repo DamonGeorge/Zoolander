@@ -1,8 +1,10 @@
 package zoo;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import org.springframework.shell.table.ArrayTableModel;
 import org.springframework.shell.table.BorderStyle;
@@ -38,10 +40,7 @@ public class Animals {
 			}
 			
 			result = query.executeQuery();
-			if(result.next())
-				TableBuilding.printBasicTable(result);
-			else 
-				System.out.println("No results found...");
+			TableBuilding.printBasicTable(result);
 				
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
@@ -101,10 +100,7 @@ public class Animals {
 			
 			
 			result = query.executeQuery();
-			if(result.next()) 
-				TableBuilding.printBasicTable(result);
-			else 
-				System.out.println("No results found...");
+			TableBuilding.printBasicTable(result);
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
@@ -145,10 +141,9 @@ public class Animals {
 			}
 			
 			result = query.executeQuery();
-			if(result.next()) 
-				TableBuilding.printBasicTable(result);
-			else 
-				System.out.println("No results found...");
+			
+			TableBuilding.printBasicTable(result);
+			
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
@@ -199,10 +194,8 @@ public class Animals {
 			}
 			
 			result = query.executeQuery();
-			if(result.next()) 
-				TableBuilding.printBasicTable(result);
-			else 
-				System.out.println("No results found...");
+			TableBuilding.printBasicTable(result);
+			
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
@@ -282,7 +275,7 @@ public class Animals {
 
 				
 			} else 
-				System.out.println("No employee found...");
+				System.out.println("No animal found...");
 			
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
@@ -319,14 +312,51 @@ public class Animals {
 			
 			query = Session.conn.prepareStatement(
 					   "UPDATE animal "
-					   + "SET name = ?, description = ?, species_name = ?, birthday = ?, "
-					   + "food_quantity = ?, last_feeding = ? "  
+					   + "SET name = ?, description = ?, species_name = ?, birthday = ?, food_quantity = ? "  
 					   + "WHERE animal_id = ?");
+				
+			for(int i = 1; i <= 5; i++) {
+				query.setString(i, newValues[i-1]);
+			}
+			query.setString(6, oldId);
+			query.executeUpdate();
+			
+    	} catch (Exception e) {
+			Session.log.info("SQL Error: " + e.toString());
+			System.out.println("Something went wrong!");
+		} finally {
+			//close everything
+			try {
+				query.close();
+			}catch(Exception e) {
+				//If closing errors out
+				Session.log.info("DB Closing Error: " + e.toString());
+			}
+		}	
+    }
+    
+    /**
+     * Add new animal
+     * @param newValues The array of values starting with animal id and ending with last_feeding
+     */
+    public static void addAnimal(String[] newValues) {
+    	if(animalExists(newValues[0])) {
+    		System.out.println("Animal #" + newValues[0] + " already exists!");
+    		return;
+    	}
+    	
+    	PreparedStatement query = null;
+    	
+    	try {
+			
+			query = Session.conn.prepareStatement(
+					   "INSERT INTO animal VALUES (?, ?, ?, ?, ?, ?, ?)");
 				
 			for(int i = 1; i <= 6; i++) {
 				query.setString(i, newValues[i-1]);
 			}
-			query.setString(7, oldId);
+			query.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
+
 			query.executeUpdate();
 			
     	} catch (Exception e) {

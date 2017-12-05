@@ -38,11 +38,8 @@ public class Enclosures {
 			}
 			
 			result = query.executeQuery();
-			if(result.next())
-				TableBuilding.printBasicTable(result);
-			else {
-				System.out.println("No results found...");
-			}
+			TableBuilding.printBasicTable(result);
+			
 		} catch (Exception e) {
 			Session.log.info("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");

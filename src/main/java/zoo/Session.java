@@ -59,7 +59,8 @@ public class Session {
 		//ONCE YOUR DONE WITH THE METHOD, REMOVE IT FROM HERE AND WRITE ITS JAVADOC
 		//=======================================================================
 
-		Stats.animalStats();
+
+		
 		//=======================================================================
 //		log.info("Login of " + currentUser);
 //		

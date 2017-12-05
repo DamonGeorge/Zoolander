@@ -16,7 +16,6 @@ CREATE TABLE employee (
 	last_name 	VARCHAR(255) 	NOT NULL,
 	birthday	DATE 			NOT NULL,
 	email 		VARCHAR(255) 	NOT NULL,
-	password 	CHAR(60) 		NOT NULL,  
 	salary 		DOUBLE(12,2) 	NOT NULL,
 	active		BOOLEAN 		NOT NULL,
 	admin 		BOOLEAN 		NOT NULL,

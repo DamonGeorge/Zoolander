@@ -18,6 +18,14 @@ public class TableBuilding {
 	
 	public static TableBuilder getAsciiTable(ResultSet result, boolean transpose, int[] columns) throws SQLException  {
 		TableModelBuilder<String> builder = new TableModelBuilder<>();
+		result.beforeFirst();
+		
+		if(!result.next()) { //If no results
+			builder.addRow();
+			builder.addValue("No Results Found...");
+			return new TableBuilder(builder.build());
+		}
+		
 		ResultSetMetaData rsmd = result.getMetaData();
 		NumberFormat moneyFormat = NumberFormat.getCurrencyInstance();
 		int columnNumber = rsmd.getColumnCount();
