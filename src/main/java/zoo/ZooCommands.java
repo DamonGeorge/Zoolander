@@ -1,14 +1,8 @@
 package zoo;
 
-import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellMethodAvailability;
 import org.springframework.shell.standard.ShellOption;
-import org.springframework.shell.table.ArrayTableModel;
-import org.springframework.shell.table.BorderStyle;
-import org.springframework.shell.table.Table;
-import org.springframework.shell.table.TableBuilder;
 
 /**
  * All the zoo commands should go in this file
@@ -87,7 +81,6 @@ public class ZooCommands {
 			@ShellOption(help="Search animals by their details", defaultValue="__NULL__")String searchAnimal, 
 			@ShellOption(help="Search animals by their enclosures", defaultValue="__NULL__")String searchEnclosure, 
 			@ShellOption(help="Search animals by their handlers", defaultValue="__NULL__")String searchEmployee
-			
 			 ) {
     
     	if(list) {
@@ -129,16 +122,103 @@ public class ZooCommands {
     	}
     }
     
-    @ShellMethod(value="Enclosure Functions: list", key={"enclosures", "enc"} )
+    @ShellMethod(value="Enclosure Functions: list, add, open, close", key={"enclosures", "enc"} )
     public void enclosureCommands(	
-    		@ShellOption(help="List all enclosures") boolean list
+    		@ShellOption(help="List all enclosures") boolean list,
+    		@ShellOption(help="Add a new enclosure") boolean add,
+    		@ShellOption(help="Open the given enclosures", defaultValue="__NULL__") String open,
+    		@ShellOption(help="Close the given enclosures", defaultValue="__NULL__") String close
 			 ) {
     
     	if(list) {
     		Enclosures.listAllEnclosures();
+    	} else if (add) {
+    		String values[] = new String[4];
+    		if(!InputHandler.getEnclosureInfo(values))
+    			return;
+    		
+    		Enclosures.addEnclosure(values);
+    		
+    	} else if (open != null) {
+    		if(!open.matches("\\d+")) {
+    			System.out.println("Please input a number for the enclosure id");
+    			return;
+    		}
+    		if(!Enclosures.enclosureExists(open)) {
+    			System.out.println("Enclosure #" + open + " doesn't exist! ");
+    			return;
+    		}
+    		
+    		Enclosures.setOpen(open, true);
+    		
+    	} else if (close != null) {
+    		if(!close.matches("\\d+")) {
+    			System.out.println("Please input a number for the enclosure id");
+    			return;
+    		}
+    		if(!Enclosures.enclosureExists(close)) {
+    			System.out.println("Enclosure #" + close + " doesn't exist! ");
+    			return;
+    		}
+    		
+    		Enclosures.setOpen(close, false);
     	} else {
     		System.out.println("Please select an option!" );
     	}
     }
     
+    @ShellMethod(value="Species Functions: list, add", key={"species", "sp"} )
+    public void speciesCommands(	
+    		@ShellOption(help="List all species") boolean list,
+    		@ShellOption(help="Add a new species") boolean add
+    		) {
+    
+    	if(list) {
+    		Species.listAllSpecies();
+    	} else if (add) {
+    		String values[] = new String[4];
+    		
+    		InputHandler.getSpeciesInfo(values);
+    		
+    		Species.addSpecies(values);
+    	
+    	} else {
+    		System.out.println("Please select an option!" );
+    	}
+    }
+    
+    @ShellMethod(value="Food Functions: list, add, purchase", key={"food", "fd"} )
+    public void foodCommands(	
+    		@ShellOption(help="List all foods") boolean list,
+    		@ShellOption(help="Add a new food") boolean add,
+    		@ShellOption(help="Add new quantity of given food", defaultValue="__NULL__") String purchase,
+    		@ShellOption(help="Feed the given animal", defaultValue="__NULL__") String feed
+    		) {
+    
+    	if(list) {
+    		Food.listAllFood();
+    	} else if (add) {
+    		//TODO: food add functions
+    	
+    	} else if (purchase != null) { 
+    		//TODO: food purchase function
+    	} else if (feed != null) {
+    		//Todo: feed function
+    	} else {
+    		System.out.println("Please select an option!" );
+    	}
+    }
+    
+    @ShellMethod(value="Statistic Functions: employee", key={"stat", "stats"} )
+    public void statCommands(	
+    		@ShellOption(help="List all foods") boolean employees
+    		) {
+    
+    	if(employees) {
+    		//TODO: food stats
+    		//TODO: all other stats
+    	} else {
+    		System.out.println("Please select an option!" );
+    	}
+    }
 }

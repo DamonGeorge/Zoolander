@@ -1,15 +1,11 @@
 package zoo;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import org.springframework.shell.table.ArrayTableModel;
 import org.springframework.shell.table.BorderStyle;
 import org.springframework.shell.table.TableBuilder;
-import org.springframework.shell.table.TableModelBuilder;
 
 /**
  * Contains the worker methods for animal functionality
@@ -58,7 +54,7 @@ public class Animals {
     }   
     
     /**
-     * TODO: check
+     * Search animals by the animal information
      * @param search
      */
     public static void searchAnimalsByAnimal(String search) {
@@ -160,7 +156,7 @@ public class Animals {
     }
 
 	/**
-     * TODO: check
+     * Search animals by the enclosures they live in
      * @param search
      */
     public static void searchAnimalsByEnclosure(String search) {
@@ -213,7 +209,7 @@ public class Animals {
     
     
     /**
-     * TODO: Check
+     * Check if the given animal exists
      * @param username
      * @return
      */
@@ -248,7 +244,7 @@ public class Animals {
     }
     
     /**
-     * TODO: finish checking
+     * View the details of a given animal and its species.
      * @param username
      */
     public static void viewAnimal(String animalId) {
@@ -295,17 +291,12 @@ public class Animals {
     
 
     /**
-     * TODO: Check
-     * TODO: check if species exists
+     * Update an animal with the given list of values:
+     * name, description, species_name, and birthday
      * @param oldId
      * @param newValues
      */
-    public static void updateAnimal(String oldId, String[] newValues) {
-    	if(!animalExists(oldId)) {
-    		System.out.println("Animal with id " + oldId + " doesn't exist!");
-    		return;
-    	}
-    	
+    public static void updateAnimal(String oldId, String[] newValues) {    	
     	PreparedStatement query = null;
     	
     	try {
@@ -339,12 +330,7 @@ public class Animals {
      * Add new animal
      * @param newValues The array of values starting with animal id and ending with last_feeding
      */
-    public static void addAnimal(String[] newValues) {
-    	if(animalExists(newValues[0])) {
-    		System.out.println("Animal #" + newValues[0] + " already exists!");
-    		return;
-    	}
-    	
+    public static void addAnimal(String[] newValues) {   	
     	PreparedStatement query = null;
     	
     	try {

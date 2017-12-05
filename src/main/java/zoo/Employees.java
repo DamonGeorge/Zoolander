@@ -261,11 +261,6 @@ public class Employees {
      * @param newValues Array of all new values starting with username
      */
     public static void updateEmployee(String oldUsername, String[] newValues) {
-    	if(!employeeExists(oldUsername)) {
-    		System.out.println("Employee " + oldUsername + " doesn't exist!");
-    		return;
-    	}
-    	
     	PreparedStatement query = null;
     	
     	try {
@@ -303,11 +298,6 @@ public class Employees {
      * @param value The new value of the attribute 
      */
     public static void updateEmployee(String username, String attribute, String value) {
-    	if(!employeeExists(username)) {
-    		System.out.println("Employee " + username + " doesn't exist!");
-    		return;
-    	}
-    	
     	PreparedStatement query = null;
 		
 		try {
@@ -338,11 +328,6 @@ public class Employees {
      * @param newValues The array of values starting with username and ending with admin
      */
     public static void addEmployee(String[] newValues) {
-    	if(employeeExists(newValues[0])) {
-    		System.out.println("Employee " + newValues[0] + " already exists!");
-    		return;
-    	}
-    	
     	PreparedStatement query = null;
     	
     	try {

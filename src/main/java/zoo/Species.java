@@ -2,12 +2,6 @@ package zoo;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.springframework.shell.table.ArrayTableModel;
-import org.springframework.shell.table.BorderStyle;
-import org.springframework.shell.table.TableBuilder;
-import org.springframework.shell.table.TableModelBuilder;
 
 /**
  * Contains the worker methods for species functionality
@@ -88,6 +82,38 @@ public class Species {
 			}
 		}
 		return exists;
+    }
+    
+    /**
+     * Add new species
+     * @param newValues The array of values starting with species name and ending with description
+     */
+    public static void addSpecies(String[] newValues) {
+    	PreparedStatement query = null;
+    	
+    	try {
+			
+			query = Session.conn.prepareStatement(
+					   "INSERT INTO species VALUES (?, ?, ?, ?)");
+				
+			for(int i = 1; i <= 4; i++) {
+				query.setString(i, newValues[i-1]);
+			}
+
+			query.executeUpdate();
+			
+    	} catch (Exception e) {
+			Session.log.info("SQL Error: " + e.toString());
+			System.out.println("Something went wrong!");
+		} finally {
+			//close everything
+			try {
+				query.close();
+			}catch(Exception e) {
+				//If closing errors out
+				Session.log.info("DB Closing Error: " + e.toString());
+			}
+		}	
     }
     
 

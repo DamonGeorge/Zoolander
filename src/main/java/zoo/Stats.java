@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 
 import org.springframework.shell.table.BorderStyle;
 import org.springframework.shell.table.TableBuilder;
-import org.springframework.shell.table.TableModelBuilder;
 
 /**
  * Stat functions

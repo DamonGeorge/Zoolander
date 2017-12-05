@@ -62,14 +62,14 @@ public class Session {
 
 		
 		//=======================================================================
-//		log.info("Login of " + currentUser);
-//		
-//		String[] disabledCommands = {"--spring.shell.command.script.enabled=false", "--spring.shell.command.stacktrace.enabled=false"}; 
-//        String[] fullArgs = StringUtils.concatenateStringArrays(args, disabledCommands);
-//		
-//        SpringApplication app = new SpringApplication(Session.class);
-//        app.setBannerMode(Banner.Mode.OFF);
-//        app.run(fullArgs);
+		log.info("Login of " + currentUser);
+		
+		String[] disabledCommands = {"--spring.shell.command.script.enabled=false", "--spring.shell.command.stacktrace.enabled=false"}; 
+        String[] fullArgs = StringUtils.concatenateStringArrays(args, disabledCommands);
+		
+        SpringApplication app = new SpringApplication(Session.class);
+        app.setBannerMode(Banner.Mode.OFF);
+        app.run(fullArgs);
 
 	}
 	
@@ -100,7 +100,6 @@ public class Session {
 			terminal = TerminalBuilder.terminal();
 			terminalWidth = terminal.getWidth() - 10;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			log.warning("Error finding terminal dimensions" + e.toString());
 			System.out.println("Couldn't initialize terminal");
 		}

@@ -2,13 +2,7 @@ package zoo;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.springframework.shell.table.ArrayTableModel;
-import org.springframework.shell.table.BorderStyle;
-import org.springframework.shell.table.TableBuilder;
-import org.springframework.shell.table.TableModelBuilder;
-
+ 
 /**
  * Contains the worker methods for enclosure functionality
  * @author damongeorge
@@ -18,7 +12,7 @@ public class Enclosures {
 
 
 	/**
-	 * Check
+	 * List all enclosures in the zoo
 	 */
     public static void listAllEnclosures() {
     	PreparedStatement query = null;
@@ -56,7 +50,7 @@ public class Enclosures {
     }   
     
     /**
-     * TODO: Check
+     * Check if the given enclosure exists
      * @param username
      * @return
      */
@@ -89,6 +83,72 @@ public class Enclosures {
 		}
 		return exists;
     }
+    
+    /**
+     * Add new enclosure
+     * @param newValues The array of values starting with enclosure id and ending with open
+     */
+    public static void addEnclosure(String[] newValues) {
+    	PreparedStatement query = null;
+    	
+    	try {
+			
+			query = Session.conn.prepareStatement(
+					   "INSERT INTO enclosure VALUES (?, ?, ?, ?)");
+				
+			for(int i = 1; i <= 4; i++) {
+				query.setString(i, newValues[i-1]);
+			}
+
+			query.executeUpdate();
+			
+    	} catch (Exception e) {
+			Session.log.info("SQL Error: " + e.toString());
+			System.out.println("Something went wrong!");
+		} finally {
+			//close everything
+			try {
+				query.close();
+			}catch(Exception e) {
+				//If closing errors out
+				Session.log.info("DB Closing Error: " + e.toString());
+			}
+		}	
+    }
+    
+    /**
+     * Set the value of open for the given enclosure
+     * @param newValues
+     */
+    public static void setOpen(String enclosureId, boolean open) {
+    	PreparedStatement query = null;
+    	
+    	try {
+			
+			query = Session.conn.prepareStatement(
+					   "UPDATE enclosure SET open = ? WHERE enclosure_id = ?");
+				
+			query.setString(1, open ? "1" : "0");
+			query.setString(2, enclosureId);
+
+			query.executeUpdate();
+			
+    	} catch (Exception e) {
+			Session.log.info("SQL Error: " + e.toString());
+			System.out.println("Something went wrong!");
+		} finally {
+			//close everything
+			try {
+				query.close();
+			}catch(Exception e) {
+				//If closing errors out
+				Session.log.info("DB Closing Error: " + e.toString());
+			}
+		}	
+    }
+    
+    
+    
     
     
 }

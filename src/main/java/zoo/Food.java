@@ -2,13 +2,9 @@ package zoo;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 
-import org.springframework.shell.table.ArrayTableModel;
 import org.springframework.shell.table.BorderStyle;
 import org.springframework.shell.table.TableBuilder;
-import org.springframework.shell.table.TableModelBuilder;
 
 public class Food {
 	

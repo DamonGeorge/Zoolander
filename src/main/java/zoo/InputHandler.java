@@ -12,7 +12,7 @@ public class InputHandler {
 		System.out.print("Username....: ");
 		values[0] = Session.scan.nextLine();
 		if(Employees.employeeExists(values[0])) {
-			System.out.println("Username already exists! ");
+			System.out.println("Employee " + values[0] + " already exists!");
 			return false;
 		}
 		System.out.print("First Name.....: ");
@@ -84,6 +84,52 @@ public class InputHandler {
 		
 		return true;
 	}
+	
+	public static boolean getEnclosureInfo(String[] values) {
+		System.out.print("Enclosure ID....: ");
+		values[0] = Session.scan.nextLine();
+		if(!values[0].matches("\\d+")) {
+			System.out.println("Please input a number for the enclosure id");
+			return false;
+		}
+		if(Enclosures.enclosureExists(values[0])) {
+			System.out.println("Enclosure #" + values[0] + " already exists! ");
+			return false;
+		}
+		System.out.print("Name.....: ");
+		values[1] = Session.scan.nextLine();
+		System.out.print("Environment......: ");
+		values[2] = Session.scan.nextLine();
+		System.out.print("Open (y/n)......: ");
+		values[3] = Session.scan.nextLine().toLowerCase().equals("y") ? "1" : "0";
+		return true;
+	}
+	
+	public static boolean getSpeciesInfo(String[] values) {
+		System.out.print("Species Name....: ");
+		values[0] = Session.scan.nextLine();
+		if(Species.speciesExists(values[0])) {
+			System.out.println("Species " + values[0] + " already exists! ");
+			return false;
+		}
+		System.out.print("Common Name.....: ");
+		values[1] = Session.scan.nextLine();
+		System.out.print("Enclosure ID......: ");
+		values[2] = Session.scan.nextLine();
+		if(!values[2].matches("\\d+")) {
+			System.out.println("Please input a number for the enclosure id");
+			return false;
+		}
+		if(!Enclosures.enclosureExists(values[2])) {
+			System.out.println("Enclosure #" + values[2] + " doesn't exist! ");
+			return false;
+		}
+		
+		System.out.print("Description......: ");
+		values[3] = Session.scan.nextLine();
+		return true;
+	}
+	
 }
 
 
