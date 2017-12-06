@@ -13,20 +13,7 @@ import org.springframework.shell.standard.ShellOption;
 @ShellComponent
 public class ZooCommands {
 
-    
-	/**
-	 * employees --list
-	 * employees --search hello --animal
-	 * employees --add
-	 * employees --view 1
-	 * employees --update 1 --attr username
-	 * employees --update 1
-	 * @param list
-	 * @param search
-	 * @param add
-	 * @param update
-	 * @param view
-	 */
+   
     @ShellMethod(value="Employee Functions: list, search, add, update, view", key={"employees", "emp"} )
     public void employeeCommands(	
     		@ShellOption(help="List all employees")boolean list, 

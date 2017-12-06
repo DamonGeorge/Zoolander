@@ -18,19 +18,19 @@ public class Food {
 					+ "FROM food");
 			result = listQuery.executeQuery();
 			
-			TableBuilder table = TableBuilding.getAsciiTable(result, false);
+			TableBuilder table = AsciiTableHelper.getAsciiTable(result, false);
 			table.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
 			System.out.println(table.build().render(Session.terminalWidth));
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error" + e.toString());
+			Session.log.warning("SQL Error" + e.toString());
 			System.out.println("Never have I had so little hair!");
 		} finally {
 			try {
 				result.close();
 				listQuery.close();
 			} catch(Exception e) {
-				Session.log.info("DB Closing Error: " + e.toString());
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}
 	}
@@ -51,7 +51,7 @@ public class Food {
 				exists = true;
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
 		} finally {
 			//close everything
@@ -60,7 +60,7 @@ public class Food {
 				query.close();
 			}catch(Exception e) {
 				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}
 		return exists;

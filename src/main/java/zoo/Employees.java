@@ -7,7 +7,7 @@ import org.springframework.shell.table.BorderStyle;
 import org.springframework.shell.table.TableBuilder;
 
 /**
- * Contains the worker methods for employee functionality
+ * Contains the database query methods for employee functionality
  * @author damongeorge
  *
  */
@@ -25,22 +25,20 @@ public class Employees {
 			listQuery = Session.conn.prepareStatement(
 					   "SELECT username, first_name, last_name, email, birthday, salary "
 					   + "FROM employee");
-			result = listQuery.executeQuery();
 			
-			TableBuilding.printBasicTable(result);
+			//Execute and print results in Ascii Table
+			result = listQuery.executeQuery();
+			AsciiTableHelper.printBasicTable(result);
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-			e.printStackTrace();
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				listQuery.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }   
@@ -52,7 +50,7 @@ public class Employees {
     public static void searchEmployeesByEmployee(String search) {
     	PreparedStatement query = null;
 		ResultSet result = null;
-		search = "%" + search.toLowerCase() + "%";
+		search = "%" + search.toLowerCase() + "%"; //For SQL LIKE Syntax
 		
 		try {
 			query = Session.conn.prepareStatement(
@@ -64,24 +62,24 @@ public class Employees {
 					   + "OR LOWER(email) LIKE ? "
 					   + "OR LOWER(birthday) LIKE ? "
 					   + "OR LOWER(salary) LIKE ?");
-			for(int i = 1; i<=6; i++) {
+			
+			for(int i = 1; i<=6; i++) { //Set all params to the search value
 				query.setString(i, search);
 			}
 			
+			//Execute query and print result
 			result = query.executeQuery();
-			TableBuilding.printBasicTable(result);
+			AsciiTableHelper.printBasicTable(result);
 		
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
@@ -106,24 +104,24 @@ public class Employees {
 					   + "OR LOWER(a.species_name) LIKE ? "
 					   + "OR LOWER(s.common_name) like ? "
 					   + "OR LOWER(a.birthday) LIKE ? ");
-			for(int i = 1; i<=5; i++) {
+			
+			for(int i = 1; i<=5; i++) { //Set all params to the search value
 				query.setString(i, search);
 			}
 			
+			//Execute query and print result
 			result = query.executeQuery();
-			TableBuilding.printBasicTable(result);
+			AsciiTableHelper.printBasicTable(result);
 		
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}
     }
@@ -145,24 +143,24 @@ public class Employees {
 					   + "WHERE LOWER(e.enclosure_id) LIKE ? "
 					   + "OR LOWER(e.name) LIKE ? "
 					   + "OR LOWER(e.environment) LIKE ? ");
-			for(int i = 1; i<=3; i++) {
+			
+			for(int i = 1; i<=3; i++) { //Set all params to the search value
 				query.setString(i, search);
 			}
 			
+			//Execute query and print result
 			result = query.executeQuery();
-			TableBuilding.printBasicTable(result);
+			AsciiTableHelper.printBasicTable(result);
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
@@ -180,42 +178,45 @@ public class Employees {
 			userQuery = Session.conn.prepareStatement(
 					   "SELECT username, first_name, last_name, email, birthday, salary, active, admin "
 					   + "FROM employee WHERE username = ?");
+			
+			//Get details of the specified user from the employee table
 			userQuery.setString(1, username);
-			
-			
 			userResult = userQuery.executeQuery();
-			if(userResult.next())  {
+			
+			
+			if(userResult.next())  { //if employee actually exists, get their animals
 				
 				animalQuery = Session.conn.prepareStatement(
 						"SELECT a.animal_id, a.name, a.species_name, e.enclosure_id, e.name, e.open "
 						+ "FROM animal a JOIN employee_training t USING (species_name) JOIN employee u USING (username) JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id) "
 						+ "WHERE u.username = ?");
+				//Execute the query with the employee's username
 				animalQuery.setString(1, username);
 				animalResult = animalQuery.executeQuery();
 				
-				TableBuilder table1 = TableBuilding.getAsciiTable(userResult, true);
-				TableBuilder table2 = TableBuilding.getAsciiTable(animalResult, false);
+				//Get the two table builders from the two result sets
+				TableBuilder table1 = AsciiTableHelper.getAsciiTable(userResult, true);
+				TableBuilder table2 = AsciiTableHelper.getAsciiTable(animalResult, false);
 
+				//Add borders and print out side by side in a double table
 				table1.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
 				table2.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-				TableBuilding.printDoubleTable(table1, "Employee: ", table2, "Animals: ", Session.terminalWidth/3);
+				AsciiTableHelper.printDoubleTable(table1, "Employee: ", table2, "Species: ", Session.terminalWidth/3);
 				
 			} else 
 				System.out.println("No employee found...");
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				userResult.close();
 				userQuery.close();
 				animalResult.close();
 				animalQuery.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
@@ -235,21 +236,21 @@ public class Employees {
 					   "SELECT username "
 					   + "FROM employee WHERE username = ?");
 			userQuery.setString(1, username);
+			
+			//Execute query and check if it has any results
 			userResult = userQuery.executeQuery();
 			if(userResult.next()) 
 				exists = true;
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				userResult.close();
 				userQuery.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}
 		return exists;
@@ -264,34 +265,32 @@ public class Employees {
     	PreparedStatement query = null;
     	
     	try {
-			
 			query = Session.conn.prepareStatement(
 					   "UPDATE employee "
 					   + "SET username = ?, first_name = ?, last_name = ?, birthday = ?, "
 					   + "email = ?, salary = ?, active = ?, admin = ? "  
 					   + "WHERE username = ?");
 				
-			for(int i = 1; i <= 8; i++) {
+			for(int i = 1; i <= 8; i++) { //Loop through new values, adding to query
 				query.setString(i, newValues[i-1]);
 			}
-			query.setString(9, oldUsername);
-			query.executeUpdate();
+			query.setString(9, oldUsername); //Set last param to the employee's original username
+			query.executeUpdate(); //execute the udpate
 			
     	} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
     
     /**
+     * TODO: Necessary Function????
      * Update the given attribute of the given employee
      * @param username Employee to update
      * @param attribute Which attribute of User to update
@@ -310,7 +309,7 @@ public class Employees {
 			query.executeUpdate();
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
 		} finally {
 			//close everything
@@ -318,7 +317,7 @@ public class Employees {
 				query.close();
 			}catch(Exception e) {
 				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}
     }
@@ -331,26 +330,23 @@ public class Employees {
     	PreparedStatement query = null;
     	
     	try {
-			
 			query = Session.conn.prepareStatement(
 					   "INSERT INTO employee VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 				
-			for(int i = 1; i <= 8; i++) {
+			for(int i = 1; i <= 8; i++) { //Loop through new values, adding them to the query
 				query.setString(i, newValues[i-1]);
 			}
 
-			query.executeUpdate();
+			query.executeUpdate(); //execute the update
 			
     	} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }

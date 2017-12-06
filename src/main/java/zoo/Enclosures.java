@@ -4,12 +4,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
  
 /**
- * Contains the worker methods for enclosure functionality
+ * Contains the database query methods for enclosure functionality
  * @author damongeorge
  *
  */
 public class Enclosures {
-
 
 	/**
 	 * List all enclosures in the zoo
@@ -19,11 +18,12 @@ public class Enclosures {
 		ResultSet result = null;
 				
 		try {
-			if (Session.admin) {
+			if (Session.admin) { //If admin show all enclosures
 				query = Session.conn.prepareStatement(
 						   "SELECT * "
 						   + "FROM enclosure");
-			} else {
+				
+			} else { //Otherwise just display the enclosures the user works with
 				query = Session.conn.prepareStatement(
 						   "SELECT e.enclosure_id, e.name, e.environment, e.open "
 						   + "FROM enclosure e JOIN species s USING (enclosure_id) JOIN employee_training t USING (species_name) "
@@ -31,20 +31,19 @@ public class Enclosures {
 				query.setString(1, Session.currentUser);
 			}
 			
+			//Execute query and print results
 			result = query.executeQuery();
-			TableBuilding.printBasicTable(result);
+			AsciiTableHelper.printBasicTable(result);
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }   
@@ -64,21 +63,21 @@ public class Enclosures {
 					   "SELECT enclosure_id "
 					   + "FROM enclosure WHERE enclosure_id = ?");
 			query.setString(1, enclosureId);
+			
+			//Execute query and check if the results contain any entries
 			result = query.executeQuery();
 			if(result.next()) 
 				exists = true;
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}
 		return exists;
@@ -92,26 +91,23 @@ public class Enclosures {
     	PreparedStatement query = null;
     	
     	try {
-			
 			query = Session.conn.prepareStatement(
 					   "INSERT INTO enclosure VALUES (?, ?, ?, ?)");
 				
-			for(int i = 1; i <= 4; i++) {
+			for(int i = 1; i <= 4; i++) { //Loop through new values, adding each to the query
 				query.setString(i, newValues[i-1]);
 			}
 
 			query.executeUpdate();
 			
     	} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
@@ -124,31 +120,24 @@ public class Enclosures {
     	PreparedStatement query = null;
     	
     	try {
-			
 			query = Session.conn.prepareStatement(
 					   "UPDATE enclosure SET open = ? WHERE enclosure_id = ?");
 				
-			query.setString(1, open ? "1" : "0");
+			query.setBoolean(1, open);; //Set boolean value
 			query.setString(2, enclosureId);
 
 			query.executeUpdate();
 			
     	} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
-    
-    
-    
-    
     
 }

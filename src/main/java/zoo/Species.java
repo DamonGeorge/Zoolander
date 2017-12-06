@@ -12,18 +12,20 @@ public class Species {
 
 
 	/**
-	 * Check
+	 * List all the species the user handles.
+	 * If admin, list all.
 	 */
     public static void listAllSpecies() {
     	PreparedStatement query = null;
 		ResultSet result = null;
 				
-		try {
-			if (Session.admin) {
+		try { 
+			if (Session.admin) { //If admin, show all species
 				query = Session.conn.prepareStatement(
 						   "SELECT * "
 						   + "FROM species");
-			} else {
+			
+			} else { //Otherwise just show the species that the user handles
 				query = Session.conn.prepareStatement(
 						   "SELECT s.species_name, s.common_name, s.enclosure_id, s.description "
 						   + "FROM species s JOIN employee_training t USING (species_name) "
@@ -31,26 +33,25 @@ public class Species {
 				query.setString(1, Session.currentUser);
 			}
 			
+			//Execute query and print results
 			result = query.executeQuery();
-			TableBuilding.printBasicTable(result);
+			AsciiTableHelper.printBasicTable(result);
 
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }   
     
     /**
-     * TODO: Check
+     * Check if a species exists in the database
      * @param username
      * @return
      */
@@ -64,21 +65,21 @@ public class Species {
 					   "SELECT species_name "
 					   + "FROM species WHERE species_name = ?");
 			query.setString(1, speciesName);
+			
+			//Execute the query and check if the result contains any entries
 			result = query.executeQuery();
 			if(result.next()) 
 				exists = true;
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}
 		return exists;
@@ -92,29 +93,25 @@ public class Species {
     	PreparedStatement query = null;
     	
     	try {
-			
 			query = Session.conn.prepareStatement(
 					   "INSERT INTO species VALUES (?, ?, ?, ?)");
 				
-			for(int i = 1; i <= 4; i++) {
+			for(int i = 1; i <= 4; i++) { //Loop through new values and add each to the query
 				query.setString(i, newValues[i-1]);
 			}
 
 			query.executeUpdate();
 			
     	} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
-    
 
 }

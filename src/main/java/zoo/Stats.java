@@ -39,16 +39,16 @@ public class Stats {
 			salaryResult = salaryQuery.executeQuery();
 			
 			
-			TableBuilder table1 = TableBuilding.getAsciiTable(trainingResult, false);
-			TableBuilder table2 = TableBuilding.getAsciiTable(salaryResult, true);
+			TableBuilder table1 = AsciiTableHelper.getAsciiTable(trainingResult, false);
+			TableBuilder table2 = AsciiTableHelper.getAsciiTable(salaryResult, true);
 			table1.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
 			table2.addInnerBorder(BorderStyle.air);
 			
-			TableBuilding.printDoubleTable(table1, "Trainings: ", table2, "Salary Stats: ", Session.terminalWidth * 2/3);
+			AsciiTableHelper.printDoubleTable(table1, "Trainings: ", table2, "Salary Stats: ", Session.terminalWidth * 2/3);
 
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
 		} finally {
 			//close everything
@@ -59,7 +59,7 @@ public class Stats {
 				salaryQuery.close();
 			}catch(Exception e) {
 				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
 	}
@@ -86,16 +86,16 @@ public class Stats {
 			animalResult = animalQuery.executeQuery();
 			
 			
-			TableBuilder table1 = TableBuilding.getAsciiTable(animalResult, false);
-			TableBuilder table2 = TableBuilding.getAsciiTable(speciesResult, true);
+			TableBuilder table1 = AsciiTableHelper.getAsciiTable(animalResult, false);
+			TableBuilder table2 = AsciiTableHelper.getAsciiTable(speciesResult, true);
 			table1.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
 			table2.addInnerBorder(BorderStyle.air);
 			
-			TableBuilding.printDoubleTable(table1, "Animals Per Species: ", table2, "", Session.terminalWidth /2);
+			AsciiTableHelper.printDoubleTable(table1, "Animals Per Species: ", table2, "", Session.terminalWidth /2);
 		
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
 		} finally {
 			//close everything
@@ -106,7 +106,7 @@ public class Stats {
 				animalQuery.close();
 			}catch(Exception e) {
 				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
 	}

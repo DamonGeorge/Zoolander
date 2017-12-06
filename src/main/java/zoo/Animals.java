@@ -8,7 +8,7 @@ import org.springframework.shell.table.BorderStyle;
 import org.springframework.shell.table.TableBuilder;
 
 /**
- * Contains the worker methods for animal functionality
+ * Contains the database access methods for animal functionality
  * @author damongeorge
  *
  */
@@ -23,11 +23,12 @@ public class Animals {
 		ResultSet result = null;
 				
 		try {
-			if (Session.admin) {
+			if (Session.admin) { //If user is admin, show all animals
 				query = Session.conn.prepareStatement(
 						   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
 						   + "FROM animal a JOIN species s USING (species_name)");
-			} else {
+			
+			} else { //Otherwise just show the animals the current user handles
 				query = Session.conn.prepareStatement(
 						   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
 						   + "FROM animal a JOIN species s USING (species_name) JOIN employee_training t USING (species_name) "
@@ -35,36 +36,35 @@ public class Animals {
 				query.setString(1, Session.currentUser);
 			}
 			
+			//execute query and print results
 			result = query.executeQuery();
-			TableBuilding.printBasicTable(result);
-				
+			AsciiTableHelper.printBasicTable(result);
+			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }   
     
     /**
-     * Search animals by the animal information
-     * @param search
+     * Search animals by their animal details
+     * @param search The search value
      */
     public static void searchAnimalsByAnimal(String search) {
     	PreparedStatement query = null;
 		ResultSet result = null;
-		search = "%" + search.toLowerCase() + "%";
+		search = "%" + search.toLowerCase() + "%"; //% for the LIKE search queries
 		
 		try {
 			
-			if(Session.admin) {
+			if(Session.admin) { //If user is admin, show all animals
 				query = Session.conn.prepareStatement(
 						   "SELECT animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
 						   + "FROM animal a JOIN species s USING (species_name) "
@@ -74,10 +74,12 @@ public class Animals {
 						   + "OR LOWER(s.common_name) LIKE ? "
 						   + "OR LOWER(a.birthday) LIKE ? "
 						   + "OR LOWER(a.last_feeding) LIKE ?");
-				for(int i = 1; i<=6; i++) {
+				
+				for(int i = 1; i<=6; i++) { //Set all 6 params to the same value
 					query.setString(i, search);
 				}
-			} else {
+				
+			} else { //Otherwise just show the animals the current user handles
 				query = Session.conn.prepareStatement(
 						   "SELECT animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
 						   + "FROM animal a JOIN species s USING (species_name) JOIN employee_training t USING (species_name)"
@@ -88,26 +90,26 @@ public class Animals {
 						   + "OR LOWER(s.common_name) LIKE ? "
 						   + "OR LOWER(a.birthday) LIKE ? "
 						   + "OR LOWER(a.last_feeding) LIKE ?) ");
+				
 				query.setString(1, Session.currentUser);
-				for(int i = 1; i<=6; i++) {
-					query.setString(i+1, search);
+				for(int i = 2; i<=7; i++) { //Set the last 6 params to the same value
+					query.setString(i, search);
 				}
 			}
 			
-			
+			//execute query and print results
 			result = query.executeQuery();
-			TableBuilding.printBasicTable(result);
+			AsciiTableHelper.printBasicTable(result);
+			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
@@ -138,19 +140,17 @@ public class Animals {
 			
 			result = query.executeQuery();
 			
-			TableBuilding.printBasicTable(result);
+			AsciiTableHelper.printBasicTable(result);
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
@@ -165,17 +165,19 @@ public class Animals {
 		search = "%" + search.toLowerCase() + "%";
 		
 		try {
-			if(Session.admin) {
+			if(Session.admin) { //List all results if admin
 				query = Session.conn.prepareStatement(
 						   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding  "
 						   + "FROM animal a JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id)"
 						   + "WHERE LOWER(e.enclosure_id) LIKE ? "
 						   + "OR LOWER(e.name) LIKE ? "
 						   + "OR LOWER(e.environment) LIKE ? ");
-				for(int i = 1; i<=3; i++) {
+				
+				for(int i = 1; i<=3; i++) { //Set all params to the same value
 					query.setString(i, search);
 				}
-			} else {
+				
+			} else { //Otherwise, list only the animals the user handles
 				query = Session.conn.prepareStatement(
 						   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding  "
 						   + "FROM animal a JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id) JOIN employee_training t USING (species_name)"
@@ -183,26 +185,26 @@ public class Animals {
 						   + "(LOWER(e.enclosure_id) LIKE ? "
 						   + "OR LOWER(e.name) LIKE ? "
 						   + "OR LOWER(e.environment) LIKE ? )");
+				
 				query.setString(1, Session.currentUser);
-				for(int i = 1; i<=3; i++) {
-					query.setString(i+1, search);
+				for(int i = 2; i<=4; i++) { //Set last 3 params to the same value
+					query.setString(i, search);
 				}
 			}
 			
+			//Execute and print results
 			result = query.executeQuery();
-			TableBuilding.printBasicTable(result);
+			AsciiTableHelper.printBasicTable(result);
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
@@ -210,7 +212,7 @@ public class Animals {
     
     /**
      * Check if the given animal exists
-     * @param username
+     * @param animalId
      * @return
      */
     public static boolean animalExists(String animalId) {
@@ -224,20 +226,19 @@ public class Animals {
 					   + "FROM animal WHERE animal_id = ?");
 			query.setString(1, animalId);
 			result = query.executeQuery();
-			if(result.next()) 
+			
+			if(result.next()) //Check if any results were found
 				exists = true;
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}
 		return exists;
@@ -245,7 +246,7 @@ public class Animals {
     
     /**
      * View the details of a given animal and its species.
-     * @param username
+     * @param animalId 
      */
     public static void viewAnimal(String animalId) {
     	PreparedStatement animalQuery = null;
@@ -257,33 +258,34 @@ public class Animals {
 					   + "FROM animal a JOIN species s USING (species_name) "
 					   + "WHERE animal_id = ?");
 			animalQuery.setString(1, animalId);
+			//Get animals details and species data
 			animalResult = animalQuery.executeQuery();
 			
-			if(animalResult.next())  {
-				int animalColumns[] = {2,3,4,5,6,7};
-				int speciesColumns[] = {1,8,9,10};
-				TableBuilder table1 = TableBuilding.getAsciiTable(animalResult, true, animalColumns);
-				TableBuilder table2 = TableBuilding.getAsciiTable(animalResult, true, speciesColumns);
+			if(animalResult.next())  { //If animal was found
+				int animalColumns[] = {2,3,4,5,6,7}; //columns to display in left table
+				int speciesColumns[] = {1,8,9,10}; //columns to display in right table
+				
+				//Build the animal and species tables
+				TableBuilder table1 = AsciiTableHelper.getAsciiTable(animalResult, true, animalColumns);
+				TableBuilder table2 = AsciiTableHelper.getAsciiTable(animalResult, true, speciesColumns);
 
+				//Add borders and print the two tables inside a double table
 				table1.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
 				table2.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-				TableBuilding.printDoubleTable(table1, "Animal: ", table2, "Species: ", Session.terminalWidth/2);
+				AsciiTableHelper.printDoubleTable(table1, "Animal: ", table2, "Species: ", Session.terminalWidth/2);
 
-				
 			} else 
 				System.out.println("No animal found...");
 			
 		} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				animalResult.close();
 				animalQuery.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
@@ -293,35 +295,35 @@ public class Animals {
     /**
      * Update an animal with the given list of values:
      * name, description, species_name, and birthday
-     * @param oldId
-     * @param newValues
+     * @param oldId The animal's id
+     * @param newValues The new name, description, species, birthday, and food quantity
      */
     public static void updateAnimal(String oldId, String[] newValues) {    	
     	PreparedStatement query = null;
     	
     	try {
-			
 			query = Session.conn.prepareStatement(
 					   "UPDATE animal "
 					   + "SET name = ?, description = ?, species_name = ?, birthday = ?, food_quantity = ? "  
 					   + "WHERE animal_id = ?");
 				
-			for(int i = 1; i <= 5; i++) {
+			for(int i = 1; i <= 5; i++) { //Add params to query from the list
 				query.setString(i, newValues[i-1]);
 			}
 			query.setString(6, oldId);
+			
+			//Execute query and display success
 			query.executeUpdate();
+			System.out.println("Animal #" + oldId + " successfully updated!");
 			
     	} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
@@ -334,31 +336,29 @@ public class Animals {
     	PreparedStatement query = null;
     	
     	try {
-			
 			query = Session.conn.prepareStatement(
 					   "INSERT INTO animal VALUES (?, ?, ?, ?, ?, ?, ?)");
 				
-			for(int i = 1; i <= 6; i++) {
+			for(int i = 1; i <= 6; i++) { //Add all parameters from the list to the query
 				query.setString(i, newValues[i-1]);
 			}
+			//Set last feeding to current time
 			query.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
 
+			//Update and display success
 			query.executeUpdate();
-			
+			System.out.println("Animal successfully created!");
+    	
     	} catch (Exception e) {
-			Session.log.info("SQL Error: " + e.toString());
+			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
+		} finally {	//close everything
 			try {
 				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.info("DB Closing Error: " + e.toString());
+			}catch(Exception e) {//If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
 			}
 		}	
     }
-    
-    
     
 }

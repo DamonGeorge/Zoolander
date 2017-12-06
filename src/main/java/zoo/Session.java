@@ -2,6 +2,8 @@ package zoo;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -22,10 +24,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.util.StringUtils;
 
+/**
+ * Main Class for initializing and running the CLI shell
+ * @author damongeorge
+ *
+ */
 @SpringBootApplication
 public class Session {
 
-	//Global connection and scanner
+	//Global variables for use throughout the app
+	//Initialized in main()
 	public static Connection conn;
 	public static Scanner scan;
 	public static String currentUser;
@@ -36,22 +44,22 @@ public class Session {
 
 	
 	public static void main(String[] args) {
-		//Get Logger
 		getLogger();
-		//Get the input scanner
-		scan = new Scanner(System.in);
+		
+		scan = new Scanner(System.in); 	//Get the input scanner
 
-		getDbConnection();
+		if(!getDbConnection()) { //If database connection failed, exit
+			System.out.println("Exiting...");
+			return;
+		}
 		
-		getTerminal();
-		
-		if(!login()) {
+		if(!login()) { //If login credentials were bad, exit
 			System.out.println("Exiting...");
 			closeDbConnection();
 			return;
 		}
 		
-		
+		getTerminal();
 		
 		System.out.println("\n====== Welcome To The Zoo ======");
 		
@@ -62,126 +70,154 @@ public class Session {
 
 		
 		//=======================================================================
-		log.info("Login of " + currentUser);
 		
+		
+		//Disable some default commands from the spring shell
 		String[] disabledCommands = {"--spring.shell.command.script.enabled=false", "--spring.shell.command.stacktrace.enabled=false"}; 
         String[] fullArgs = StringUtils.concatenateStringArrays(args, disabledCommands);
 		
+        //Start the app with the disabled commands and disable the banner
         SpringApplication app = new SpringApplication(Session.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.run(fullArgs);
 
 	}
 	
-	
+	/**
+	 * Initialize the debugging logger.
+	 * This logger will be used by the app to log errors
+	 * to the 'debug.log' file. 
+	 */
 	private static void getLogger() {
-		Logger logger = Logger.getLogger("Zoolander");
-		// suppress the logging output to the console
+		log = Logger.getLogger("Zoolander"); //new logger
+		
+		//suppress the logging output to the console
+		//by removing the default console handler
         Logger rootLogger = Logger.getLogger("");
         Handler[] handlers = rootLogger.getHandlers();
         if (handlers[0] instanceof ConsoleHandler) {
             rootLogger.removeHandler(handlers[0]);
         }
         
-        try {
+        try { //Open the log file and add the simple text formatter
         	FileHandler file = new FileHandler("debug.log");
         	file.setFormatter(new SimpleFormatter());
-			logger.addHandler(file);
+			log.addHandler(file);
 		} catch (IOException e) {
+			log.severe("Log file error: " + e.toString());
 			System.out.println("Couldn't get logger!");
-		} 
-        log = logger;
-        
-       
+		}         
+
 	}
 	
+	/**
+	 * Get the JLine Terminal instance and get the initial terminal width
+	 */
 	private static void getTerminal() {
 		try {
 			terminal = TerminalBuilder.terminal();
 			terminalWidth = terminal.getWidth() - 10;
 		} catch (IOException e) {
-			log.warning("Error finding terminal dimensions" + e.toString());
+			log.severe("Error initializing JLine Terminal: " + e.toString());
 			System.out.println("Couldn't initialize terminal");
 		}
 	}
 	
-	
+	/**
+	 * Login the user
+	 * @return False if the user provides bad credentials more than three times
+	 */
 	private static boolean login() {
-		
 		PreparedStatement loginQuery = null;
 		ResultSet result = null;
+		boolean loggedIn = false;
 		int i = 0;
 				
 		try {
 			loginQuery = conn.prepareStatement(
 					   "select username, admin, active from employee where username = ?");
-			for(i = 0; i < 3; i++) {
+			
+			for(i = 0; i < 3; i++) { //User gets three tries to login
+				//Get the user's username, and execute the query with it
 				System.out.println("Username: ");
 				String username = scan.nextLine();
 				loginQuery.setString(1, username);
 				result = loginQuery.executeQuery();
-				//If a country with that code exists, close queries and return
-				if(result.next()) {
-					if(!result.getBoolean(3)) {
+				
+				
+				if(result.next()) { 
+					if(!result.getBoolean(3)) { //If user exists, but isn't active, reject the login
 						System.out.println("User " + username + " isn't active! Please Try Again");
-					} else {
+					} else { //Otherwise login the user
 						currentUser = result.getString(1);
 						admin = result.getBoolean(2);
-						return true;
+						loggedIn =  true;
+						break;
 					}
 				} else {
 					System.out.println("User " + username + " doesn't exist! Please Try Again");
 				}
 			}
-			return false;
+					
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong!");
-			return false;
-		} finally {
-			//close everything
+		} finally { //close everything
 			try {
 				result.close();
 				loginQuery.close();
-			}catch(Exception e) {
-				//If closing errors out
-				e.printStackTrace();
+			}catch(Exception e) { //If closing errors out
+				log.warning("DB Closing Error: " + e.toString());
 				System.out.println("Something went wrong!");
-				return false;
 			}
 		}
-				   
+		
+		return loggedIn;		   
 	}
 	
-	private static void getDbConnection() {
-		try {	//Get database connection from properties file
+	/**
+	 * Get Database Connection
+	 * @return False if connection failed
+	 */
+	private static boolean getDbConnection() {
+		try {	
+			//Get database connection from properties file
 			Properties prop = new Properties();
 			FileInputStream in = new FileInputStream("application.properties");
 			prop.load(in);
 			in.close();
 	        
-			// connect to database
+			// connect to database with given properties from file
 			String ip = prop.getProperty("hostIP");
 			String port = prop.getProperty("hostPort");
 			String db = prop.getProperty("database");
 			String user = prop.getProperty("username");
             String pass = prop.getProperty("password");
 	        
+            //Construct url and get connection
             String url = "jdbc:mariadb://" + ip + ":" + port + "/" + db;
             conn = DriverManager.getConnection(url, user, pass);		
-	
+            
+            //True since no error occurred
+            return true; 
+            
 		}catch (Exception e) { //if error, quit 
+			log.severe("Couldn't connect to database: " + e.toString());
 			System.out.println("Error: Couldn't connect to database!");
-			e.printStackTrace();
-			return;
+			return false; //False if database connection wasn't made
 		}
+		
 	}
 	
+	/**
+	 * Close the database connection
+	 */
 	private static void closeDbConnection() {
 		try {
 			conn.close();
 		} catch(SQLException e) {
-			e.printStackTrace();
+			log.severe("Couldn't close database connection: " + e.toString());
+			System.out.println("Error: Couldn't close database connection!");
 		}
 	}
 

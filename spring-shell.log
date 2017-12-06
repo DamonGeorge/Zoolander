@@ -153,3 +153,16 @@
 1512513012385:species --add
 1512513038903:species --list
 1512514561921:exit
+1512521563489:enclosures --list
+1512521569688:enclosures --open 1
+1512521571712:enclosures --list
+1512521574112:enclosures --open 2
+1512521575248:enclosures --list
+1512521579888:enclosures --close 2
+1512521581624:enclosures --list
+1512521727635:exit
+1512521742837:help
+1512521749267:employees --list
+1512521754763:help species
+1512521767322:species --list
+1512521772754:exit
