@@ -11,7 +11,7 @@ import org.springframework.shell.table.TableBuilder;
  * @author damongeorge
  *
  */
-public class Employees {
+public class EmployeeRepo {
 
 
 	/**

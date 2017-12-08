@@ -12,7 +12,7 @@ import org.springframework.shell.table.TableBuilder;
  * @author damongeorge
  *
  */
-public class Animals {
+public class AnimalRepo {
 
 
 	/**

@@ -8,7 +8,7 @@ import java.sql.ResultSet;
  * @author damongeorge
  *
  */
-public class Species {
+public class SpeciesRepo {
 
 
 	/**

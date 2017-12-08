@@ -8,7 +8,7 @@ import java.sql.ResultSet;
  * @author damongeorge
  *
  */
-public class Enclosures {
+public class EnclosureRepo {
 
 	/**
 	 * List all enclosures in the zoo

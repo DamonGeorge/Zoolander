@@ -11,7 +11,7 @@ public class InputHandler {
 	public static boolean getEmployeeInfo(String[] values) {
 		System.out.print("Username....: ");
 		values[0] = Session.scan.nextLine();
-		if(Employees.employeeExists(values[0])) {
+		if(EmployeeRepo.employeeExists(values[0])) {
 			System.out.println("Employee " + values[0] + " already exists!");
 			return false;
 		}
@@ -50,7 +50,7 @@ public class InputHandler {
     			System.out.println("Please input a number for the animal id");
     			return false;
     		}
-    		if(Animals.animalExists(values[i])) {
+    		if(AnimalRepo.animalExists(values[i])) {
     			System.out.println("Animal #" + values[i] + " already exists! ");
     			return false;
     		}
@@ -63,7 +63,7 @@ public class InputHandler {
 		values[i++] = Session.scan.nextLine();
 		System.out.print("Species....: ");
 		values[i] = Session.scan.nextLine();
-		if(!Species.speciesExists(values[i])){
+		if(!SpeciesRepo.speciesExists(values[i])){
 			System.out.println("Species " + values[i] + " doesn't exist!");
 			return false;
 		}
@@ -92,7 +92,7 @@ public class InputHandler {
 			System.out.println("Please input a number for the enclosure id");
 			return false;
 		}
-		if(Enclosures.enclosureExists(values[0])) {
+		if(EnclosureRepo.enclosureExists(values[0])) {
 			System.out.println("Enclosure #" + values[0] + " already exists! ");
 			return false;
 		}
@@ -108,7 +108,7 @@ public class InputHandler {
 	public static boolean getSpeciesInfo(String[] values) {
 		System.out.print("Species Name....: ");
 		values[0] = Session.scan.nextLine();
-		if(Species.speciesExists(values[0])) {
+		if(SpeciesRepo.speciesExists(values[0])) {
 			System.out.println("Species " + values[0] + " already exists! ");
 			return false;
 		}
@@ -120,7 +120,7 @@ public class InputHandler {
 			System.out.println("Please input a number for the enclosure id");
 			return false;
 		}
-		if(!Enclosures.enclosureExists(values[2])) {
+		if(!EnclosureRepo.enclosureExists(values[2])) {
 			System.out.println("Enclosure #" + values[2] + " doesn't exist! ");
 			return false;
 		}

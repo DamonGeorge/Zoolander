@@ -26,18 +26,18 @@ public class ZooCommands {
 			 ) {
     
     	if(list) {
-    		Employees.listAllEmployees();
+    		EmployeeRepo.listAllEmployees();
     	} else if (view != null) {
-    		Employees.viewEmployee(view);
+    		EmployeeRepo.viewEmployee(view);
     		
     	} else if (add) {
     		String values[] = new String[8];
     		if(!InputHandler.getEmployeeInfo(values))
     			return;
     		
-    		Employees.addEmployee(values);
+    		EmployeeRepo.addEmployee(values);
     	} else if (update != null) {
-			if(!Employees.employeeExists(update)) {
+			if(!EmployeeRepo.employeeExists(update)) {
     			System.out.println("User " + update + " doesn't exist! ");
     			return;
     		} 
@@ -45,14 +45,14 @@ public class ZooCommands {
 			String values[] = new String[8];
 			if(!InputHandler.getEmployeeInfo(values))
     			return;
-    		Employees.updateEmployee(update, values);
+    		EmployeeRepo.updateEmployee(update, values);
     		
     	} else if (searchEmployee != null) {
-    		Employees.searchEmployeesByEmployee(searchEmployee);
+    		EmployeeRepo.searchEmployeesByEmployee(searchEmployee);
     	} else if (searchAnimal != null) {
-    		Employees.searchEmployeesByAnimal(searchAnimal);
+    		EmployeeRepo.searchEmployeesByAnimal(searchAnimal);
     	} else if (searchEnclosure != null) {
-    		Employees.searchEmployeesByEnclosure(searchEnclosure);
+    		EmployeeRepo.searchEmployeesByEnclosure(searchEnclosure);
     	} else {
     		System.out.println("Please select an option!" );
     	}
@@ -71,16 +71,16 @@ public class ZooCommands {
 			 ) {
     
     	if(list) {
-    		Animals.listAllAnimals();
+    		AnimalRepo.listAllAnimals();
     	} else if (view != null) {
-    		Animals.viewAnimal(view);
+    		AnimalRepo.viewAnimal(view);
     	} else if (add) {
     		String values[] = new String[6];    		
     		
     		if(!InputHandler.getAnimalInfo(values, true))
     			return;
     		
-    		Animals.addAnimal(values);
+    		AnimalRepo.addAnimal(values);
     		
     	}else if (update != null) {
     		String values[] = new String[5];
@@ -88,7 +88,7 @@ public class ZooCommands {
     			System.out.println("Please input a number for the animal id");
     			return;
     		}
-    		if(!Animals.animalExists(update)) {
+    		if(!AnimalRepo.animalExists(update)) {
     			System.out.println("Animal #" + update + " doesn't exist! ");
     			return;
     		}
@@ -96,14 +96,14 @@ public class ZooCommands {
     		if(!InputHandler.getAnimalInfo(values, false))
     			return;
     		
-    		Animals.updateAnimal(update, values);
+    		AnimalRepo.updateAnimal(update, values);
     		
     	} else if (searchAnimal != null) {
-    		Animals.searchAnimalsByAnimal(searchAnimal);
+    		AnimalRepo.searchAnimalsByAnimal(searchAnimal);
     	} else if (searchEnclosure != null) {
-    		Animals.searchAnimalsByEnclosure(searchEnclosure);
+    		AnimalRepo.searchAnimalsByEnclosure(searchEnclosure);
     	} else if (searchEmployee != null) {
-    		Animals.searchAnimalByEmployee(searchEmployee);
+    		AnimalRepo.searchAnimalByEmployee(searchEmployee);
     	} else {
     		System.out.println("Please select an option!" );
     	}
@@ -118,37 +118,37 @@ public class ZooCommands {
 			 ) {
     
     	if(list) {
-    		Enclosures.listAllEnclosures();
+    		EnclosureRepo.listAllEnclosures();
     	} else if (add) {
     		String values[] = new String[4];
     		if(!InputHandler.getEnclosureInfo(values))
     			return;
     		
-    		Enclosures.addEnclosure(values);
+    		EnclosureRepo.addEnclosure(values);
     		
     	} else if (open != null) {
     		if(!open.matches("\\d+")) {
     			System.out.println("Please input a number for the enclosure id");
     			return;
     		}
-    		if(!Enclosures.enclosureExists(open)) {
+    		if(!EnclosureRepo.enclosureExists(open)) {
     			System.out.println("Enclosure #" + open + " doesn't exist! ");
     			return;
     		}
     		
-    		Enclosures.setOpen(open, true);
+    		EnclosureRepo.setOpen(open, true);
     		
     	} else if (close != null) {
     		if(!close.matches("\\d+")) {
     			System.out.println("Please input a number for the enclosure id");
     			return;
     		}
-    		if(!Enclosures.enclosureExists(close)) {
+    		if(!EnclosureRepo.enclosureExists(close)) {
     			System.out.println("Enclosure #" + close + " doesn't exist! ");
     			return;
     		}
     		
-    		Enclosures.setOpen(close, false);
+    		EnclosureRepo.setOpen(close, false);
     	} else {
     		System.out.println("Please select an option!" );
     	}
@@ -161,13 +161,13 @@ public class ZooCommands {
     		) {
     
     	if(list) {
-    		Species.listAllSpecies();
+    		SpeciesRepo.listAllSpecies();
     	} else if (add) {
     		String values[] = new String[4];
     		
     		InputHandler.getSpeciesInfo(values);
     		
-    		Species.addSpecies(values);
+    		SpeciesRepo.addSpecies(values);
     	
     	} else {
     		System.out.println("Please select an option!" );
@@ -183,7 +183,7 @@ public class ZooCommands {
     		) {
     
     	if(list) {
-    		Food.listAllFood();
+    		FoodRepo.listAllFood();
     	} else if (add) {
     		//TODO: food add functions
     	
@@ -198,12 +198,20 @@ public class ZooCommands {
     
     @ShellMethod(value="Statistic Functions: employee", key={"stat", "stats"} )
     public void statCommands(	
-    		@ShellOption(help="List all foods") boolean employees
+    		@ShellOption(help="Salary Statistics") boolean salaries,
+    		@ShellOption(help="Number of trainings per employee") boolean handlers,
+    		@ShellOption(help="Species Statistics") boolean species,
+    		@ShellOption(help="Enclosure Statistics") boolean enclosures
     		) {
-    
-    	if(employees) {
-    		//TODO: food stats
-    		//TODO: all other stats
+    	//TODO: food stats
+    	if(salaries) {
+    		StatsRepo.salaryStats();
+    	} else if (handlers) {
+    		StatsRepo.handlerStats();
+    	} else if (species) {
+    		StatsRepo.speciesStats();
+    	} else if (enclosures) {
+    		StatsRepo.enclosureStats();
     	} else {
     		System.out.println("Please select an option!" );
     	}

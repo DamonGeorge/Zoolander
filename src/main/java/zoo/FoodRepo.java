@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import org.springframework.shell.table.BorderStyle;
 import org.springframework.shell.table.TableBuilder;
 
-public class Food {
+public class FoodRepo {
 	
 	public static void listAllFood() {
 		PreparedStatement listQuery = null;

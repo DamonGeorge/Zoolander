@@ -60,18 +60,24 @@ public class Session {
 		}
 		
 		getTerminal();
-		
 		System.out.println("\n====== Welcome To The Zoo ======");
 		
+		
+		/**
+		 * TODOS
+		 * TODO: employee activate/deactivate ???
+		 * TODO: employee add/remove trainings ???
+		 * TODO: food - feed and purchase
+		 * TODO: more stats functionality
+		 * TODO: view species, enclosure, food ??? - prob unnecessary
+		 * TODO: special employee update function - remove??
+		 */
+		
 		//FOR TESTING PURPOSES JUST CALL WORKER METHODS YOUR TESTING HERE
-		//ONCE YOUR DONE WITH THE METHOD, REMOVE IT FROM HERE AND WRITE ITS JAVADOC
 		//=======================================================================
-
 
 		
 		//=======================================================================
-		
-		
 		//Disable some default commands from the spring shell
 		String[] disabledCommands = {"--spring.shell.command.script.enabled=false", "--spring.shell.command.stacktrace.enabled=false"}; 
         String[] fullArgs = StringUtils.concatenateStringArrays(args, disabledCommands);
