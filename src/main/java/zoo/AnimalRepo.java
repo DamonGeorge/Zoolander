@@ -117,7 +117,7 @@ public class AnimalRepo {
     
     
     /**
-     * TODO: Can regular users run this query??? no?
+     * Searches for animals by their handlers' information
      * @param search
      */
     public static void searchAnimalByEmployee(String search) {

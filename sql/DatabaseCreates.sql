@@ -34,7 +34,6 @@ CREATE TABLE species (
 	species_name 	VARCHAR(255) NOT NULL,
 	common_name 	VARCHAR(255) NOT NULL,
 	enclosure_id 	INT 		NOT NULL,
-	description 	VARCHAR(1023) NOT NULL,					
 	PRIMARY KEY (species_name),		-- ???? or id???
 	FOREIGN KEY (enclosure_id) REFERENCES enclosure(enclosure_id)
 )ENGINE=InnoDB;

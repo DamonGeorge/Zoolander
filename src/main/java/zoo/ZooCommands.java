@@ -1,7 +1,9 @@
 package zoo;
 
+import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.standard.ShellMethodAvailability;
 import org.springframework.shell.standard.ShellOption;
 
 /**
@@ -13,8 +15,14 @@ import org.springframework.shell.standard.ShellOption;
 @ShellComponent
 public class ZooCommands {
 
+    public Availability adminCheck() { 
+        return Session.admin
+            ? Availability.available()
+            : Availability.unavailable("Admin priveleges required");
+    }
    
     @ShellMethod(value="Employee Functions: list, search, add, update, view", key={"employees", "emp"} )
+    @ShellMethodAvailability("adminCheck") 
     public void employeeCommands(	
     		@ShellOption(help="List all employees")boolean list, 
     		@ShellOption(help="View the given employee's details", defaultValue="__NULL__") String view, 

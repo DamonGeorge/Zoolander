@@ -9,34 +9,27 @@ package zoo;
 public class InputHandler {
 
 	public static boolean getEmployeeInfo(String[] values) {
-		System.out.print("Username....: ");
-		values[0] = Session.scan.nextLine();
+		values[0] = Session.reader.readLine("Username....: ");
 		if(EmployeeRepo.employeeExists(values[0])) {
 			System.out.println("Employee " + values[0] + " already exists!");
 			return false;
 		}
-		System.out.print("First Name.....: ");
-		values[1] = Session.scan.nextLine();
-		System.out.print("Last Name......: ");
-		values[2] = Session.scan.nextLine();
-		System.out.print("Birthday....: ");
-		values[3] = Session.scan.nextLine();
+		values[1] = Session.reader.readLine("First Name.....: ");
+		values[2] = Session.reader.readLine("Last Name......: ");
+		values[3] = Session.reader.readLine("Birthday....: ");
 		if(!values[3].matches("\\d\\d\\d\\d-\\d\\d-\\d\\d")) {
 			System.out.println("Please enter dates in the form yyyy-mm-dd");
+			return false;
 		}
 		
-		System.out.print("Email.....: ");
-		values[4] = Session.scan.nextLine();
-		System.out.print("Salary......: ");
-		values[5] = Session.scan.nextLine();
+		values[4] = Session.reader.readLine("Email.....: ");
+		values[5] = Session.reader.readLine("Salary......: ");
 		if(!values[5].matches("\\d+.\\d\\d")){
 			System.out.println("Please enter a decimal number for the salary!");
 			return false;
 		}
-		System.out.print("Active (y/n)......: ");
-		values[6] = Session.scan.nextLine().toLowerCase().equals("y") ? "1" : "0";
-		System.out.print("Admin (y/n)......: ");
-		values[7] = Session.scan.nextLine().toLowerCase().equals("y") ? "1" : "0";
+		values[6] = Session.reader.readLine("Active (y/n)......: ").toLowerCase().equals("y") ? "1" : "0";
+		values[7] = Session.reader.readLine("Admin (y/n)......: ").toLowerCase().equals("y") ? "1" : "0";
 		return true;
 	}
 	
@@ -44,8 +37,7 @@ public class InputHandler {
 	public static boolean getAnimalInfo(String[] values, boolean newAnimal) {
 		int i = 0;
 		if(newAnimal) {
-			System.out.print("Animal ID....: ");
-    		values[i] = Session.scan.nextLine();
+    		values[i] = Session.reader.readLine("Animal ID....: ");
     		if(!values[i].matches("\\d+")) {
     			System.out.println("Please input a number for the animal id");
     			return false;
@@ -57,26 +49,21 @@ public class InputHandler {
     		i++;
 		}
 	
-		System.out.print("Name......: ");
-		values[i++] = Session.scan.nextLine();
-		System.out.print("Description..: ");
-		values[i++] = Session.scan.nextLine();
-		System.out.print("Species....: ");
-		values[i] = Session.scan.nextLine();
+		values[i++] = Session.reader.readLine("Name......: ");
+		values[i++] = Session.reader.readLine("Description..: ");
+		values[i] = Session.reader.readLine("Species....: ");
 		if(!SpeciesRepo.speciesExists(values[i])){
 			System.out.println("Species " + values[i] + " doesn't exist!");
 			return false;
 		}
 		i++;
-		System.out.print("Birthday.....: ");
-		values[i] = Session.scan.nextLine();
+		values[i] = Session.reader.readLine("Birthday.....: ");
 		if(!values[i].matches("\\d\\d\\d\\d-\\d\\d-\\d\\d")) {
 			System.out.println("Please enter dates in the form yyyy-mm-dd");
 			return false;
 		}
 		i++;
-		System.out.print("Food Quantity......: ");
-		values[i] = Session.scan.nextLine();
+		values[i] = Session.reader.readLine("Food Quantity......: ");
 		if(!values[i].matches("\\d+")){
 			System.out.println("Please enter a number for the quantity!");
 			return false;
@@ -86,8 +73,7 @@ public class InputHandler {
 	}
 	
 	public static boolean getEnclosureInfo(String[] values) {
-		System.out.print("Enclosure ID....: ");
-		values[0] = Session.scan.nextLine();
+		values[0] = Session.reader.readLine("Enclosure ID....: ");
 		if(!values[0].matches("\\d+")) {
 			System.out.println("Please input a number for the enclosure id");
 			return false;
@@ -96,26 +82,20 @@ public class InputHandler {
 			System.out.println("Enclosure #" + values[0] + " already exists! ");
 			return false;
 		}
-		System.out.print("Name.....: ");
-		values[1] = Session.scan.nextLine();
-		System.out.print("Environment......: ");
-		values[2] = Session.scan.nextLine();
-		System.out.print("Open (y/n)......: ");
-		values[3] = Session.scan.nextLine().toLowerCase().equals("y") ? "1" : "0";
+		values[1] = Session.reader.readLine("Name.....: ");
+		values[2] = Session.reader.readLine("Environment......: ");
+		values[3] = Session.reader.readLine("Open (y/n)......: ").toLowerCase().equals("y") ? "1" : "0";
 		return true;
 	}
 	
 	public static boolean getSpeciesInfo(String[] values) {
-		System.out.print("Species Name....: ");
-		values[0] = Session.scan.nextLine();
+		values[0] = Session.reader.readLine("Species Name....: ");
 		if(SpeciesRepo.speciesExists(values[0])) {
 			System.out.println("Species " + values[0] + " already exists! ");
 			return false;
 		}
-		System.out.print("Common Name.....: ");
-		values[1] = Session.scan.nextLine();
-		System.out.print("Enclosure ID......: ");
-		values[2] = Session.scan.nextLine();
+		values[1] = Session.reader.readLine("Common Name.....: ");
+		values[2] = Session.reader.readLine("Enclosure ID......: ");
 		if(!values[2].matches("\\d+")) {
 			System.out.println("Please input a number for the enclosure id");
 			return false;
@@ -125,8 +105,7 @@ public class InputHandler {
 			return false;
 		}
 		
-		System.out.print("Description......: ");
-		values[3] = Session.scan.nextLine();
+		values[3] = Session.reader.readLine("Description......: ");
 		return true;
 	}
 	

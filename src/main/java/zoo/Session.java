@@ -2,21 +2,20 @@ package zoo;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.springframework.boot.Banner;
@@ -35,19 +34,19 @@ public class Session {
 	//Global variables for use throughout the app
 	//Initialized in main()
 	public static Connection conn;
-	public static Scanner scan;
 	public static String currentUser;
 	public static boolean admin;
 	public static Logger log;
 	public static Terminal terminal;
 	public static int terminalWidth;
+	public static LineReader reader;
 
 	
 	public static void main(String[] args) {
 		getLogger();
 		
-		scan = new Scanner(System.in); 	//Get the input scanner
-
+		getTerminal();
+		
 		if(!getDbConnection()) { //If database connection failed, exit
 			System.out.println("Exiting...");
 			return;
@@ -59,7 +58,7 @@ public class Session {
 			return;
 		}
 		
-		getTerminal();
+		
 		System.out.println("\n====== Welcome To The Zoo ======");
 		
 		
@@ -117,11 +116,14 @@ public class Session {
 	}
 	
 	/**
-	 * Get the JLine Terminal instance and get the initial terminal width
+	 * Get the JLine Terminal instance, the console reader instance, and get the initial terminal width
 	 */
 	private static void getTerminal() {
 		try {
 			terminal = TerminalBuilder.terminal();
+			
+			reader = LineReaderBuilder.builder().terminal(terminal).build();
+			
 			terminalWidth = terminal.getWidth() - 10;
 		} catch (IOException e) {
 			log.severe("Error initializing JLine Terminal: " + e.toString());
@@ -145,8 +147,7 @@ public class Session {
 			
 			for(i = 0; i < 3; i++) { //User gets three tries to login
 				//Get the user's username, and execute the query with it
-				System.out.println("Username: ");
-				String username = scan.nextLine();
+				String username = reader.readLine("Username: ", '*');
 				loginQuery.setString(1, username);
 				result = loginQuery.executeQuery();
 				
