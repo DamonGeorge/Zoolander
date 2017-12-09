@@ -1,4 +1,4 @@
---inserts for the database
+-- inserts for the database
 
 
 INSERT INTO employee VALUES 
