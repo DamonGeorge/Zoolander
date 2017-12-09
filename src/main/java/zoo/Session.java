@@ -2,13 +2,17 @@ package zoo;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
@@ -75,7 +79,8 @@ public class Session {
 		
 		//FOR TESTING PURPOSES JUST CALL WORKER METHODS YOUR TESTING HERE
 		//=======================================================================
-
+		executeSQLScript("DatabaseCreates.sql");
+		//executeSQLScript("DatabaseInserts.sql");
 		
 		//=======================================================================
 		//Disable some default commands from the spring shell
@@ -226,5 +231,55 @@ public class Session {
 			System.out.println("Error: Couldn't close database connection!");
 		}
 	}
-
+	
+	private static void executeSQLScript(String filename)
+	{
+		Statement stmt = null;
+		Reader reader = null;
+		FileInputStream in = null;
+		
+		//TODO:: remove hardcode of sql folderpath
+		String projectPath = System.getProperty("user.dir");
+		String sqlFolderPath = "/sql/";
+		
+		try{
+			//System.out.println(projectPath + sqlFolderPath + filename);
+			in = new FileInputStream(projectPath + sqlFolderPath + filename);
+			reader = new InputStreamReader(in);
+			
+			StringBuilder builder = new StringBuilder();
+			int character = reader.read();
+		
+			while(character>=0)
+			{
+				
+				//System.out.print(Character.toChars(character));
+				if(character==';'){
+					//System.out.println(builder.toString());
+					stmt = Session.conn.createStatement();
+					stmt.executeUpdate(builder.toString());
+					stmt.close();
+					builder.setLength(0);
+					
+				}
+				else {
+					//System.out.println(builder.toString());
+					builder.append(Character.toChars(character));
+				}
+				character = reader.read();
+			}
+		}
+		catch(Exception e) {
+			Session.log.warning("SQL Error: " + e.toString());
+			System.out.println("Something went wrong!");
+		} finally { //close everything
+			try {
+				if(stmt!=null) 	stmt.close();
+				if(in!=null)	in.close();
+				if(reader!=null) reader.close();
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
+			}
+		}
+	}
 }

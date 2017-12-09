@@ -1,4 +1,4 @@
---Create statements for the database
+-- Create statements for the database
 Set sql_mode = STRICT_ALL_TABLES;
 
 DROP TABLE IF EXISTS species_eats;
