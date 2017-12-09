@@ -15,7 +15,8 @@ INSERT INTO animal VALUES
 (1, 'Charlie', 'Charlie enjoys long walks on the beach', 'Spheniscidae', '2012-02-04', 3, '2017-11-15 12:00:00');
 
 INSERT INTO food VALUES 
-(1, 'Fruity Pebbles', 'Kellogs', 20.00, 50000, 0.5);
+(1, 'Fruity Pebbles', 'Kellogs', 20.00, 50000, 0.5),
+(2, 'Frosted Flakes', 'kellogs', 22.00, 100000, .45);
 
 INSERT INTO employee_training VALUES 
 ('tdog', 'Spheniscidae', '2015-06-24', 4);

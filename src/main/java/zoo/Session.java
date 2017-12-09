@@ -80,7 +80,7 @@ public class Session {
 		//FOR TESTING PURPOSES JUST CALL WORKER METHODS YOUR TESTING HERE
 		//=======================================================================
 		executeSQLScript("DatabaseCreates.sql");
-		//executeSQLScript("DatabaseInserts.sql");
+		executeSQLScript("DatabaseInserts.sql");
 		
 		//=======================================================================
 		//Disable some default commands from the spring shell
@@ -232,6 +232,13 @@ public class Session {
 		}
 	}
 	
+	
+	/**
+	 * Executes an .sql script to the database
+	 * Automatically paths to ~/Zoolander/sql/*.sql directory
+	 * @param filename 
+	 * 
+	 */
 	private static void executeSQLScript(String filename)
 	{
 		Statement stmt = null;
@@ -260,7 +267,6 @@ public class Session {
 					stmt.executeUpdate(builder.toString());
 					stmt.close();
 					builder.setLength(0);
-					
 				}
 				else {
 					//System.out.println(builder.toString());
@@ -268,6 +274,7 @@ public class Session {
 				}
 				character = reader.read();
 			}
+			System.out.println("\n---SQL Script=="+filename+"==Successufully Executed---\n");
 		}
 		catch(Exception e) {
 			Session.log.warning("SQL Error: " + e.toString());
