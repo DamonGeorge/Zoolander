@@ -8,6 +8,9 @@ import org.springframework.shell.table.TableBuilder;
 
 public class FoodRepo {
 	
+	/**
+	 * Displays all food in database
+	 */
 	public static void listAllFood() {
 		PreparedStatement listQuery = null;
 		ResultSet result = null;
@@ -35,6 +38,11 @@ public class FoodRepo {
 		}
 	}
 	
+	/**
+	 * Checks if a food_id exists in the context of the database
+	 * @param id	food_id to check
+	 * @return
+	 */
 	public static boolean foodExists(int id){
 		PreparedStatement query = null;
 		ResultSet result = null;
@@ -66,6 +74,12 @@ public class FoodRepo {
 		return exists;
 	}
 	
+	/**
+	 * Decrements food quantity given an animals nutritional requirement and a
+	 * foods nutritional index
+	 * @param animal_id	the animal to be fed
+	 * @param food_id	the type of food to feed the animal
+	 */
 	public static void feedAnimal(int animal_id, int food_id)
 	{
 		PreparedStatement statement = null;
@@ -86,7 +100,6 @@ public class FoodRepo {
 				//check if employee is trained to handle that species or
 				//if training is still valid
 				if(!result.next() || !isTrainingValid(result.getDate(1), result.getInt(2))){
-					//throw some error, employee can't feed this animal
 					throw new Exception("Employee not trained to feed this species.");
 				}
 				statement.close();	statement = null;
@@ -100,11 +113,13 @@ public class FoodRepo {
 			statement.setInt(2, animal_id);
 			result = statement.executeQuery();
 			
+			//Throw error for invalid food and species combination
 			if(!result.next())
 				throw new Exception("Connot feed this animal species with food_id=" + food_id);
 			
 			double newQuantity = result.getDouble(1)-(result.getDouble(2)/result.getDouble(3));
 			
+			//Throw error if feeding an animal requires more food than available
 			if(newQuantity<0)
 				throw new Exception("Not enough food to feed this animal!");
 			
@@ -135,26 +150,37 @@ public class FoodRepo {
 		}
 	}
 	
-	//TODO:: implement Calendar class to remove deprecated method calls
+
+	/**
+	 * TODO:: implement Calendar class to remove deprecated method calls
+	 * Determines if an employee's training is still valid
+	 * @param date	date that employee was trained
+	 * @param years_valid	how many years the training is valid
+	 * @return
+	 */
 	@SuppressWarnings("deprecation")
 	private static boolean isTrainingValid(Date date, int years_valid)
 	{
-		Date curr = new Date(System.currentTimeMillis());
-		Date exDate = (Date) date.clone();
+		Date currentDate = new Date(System.currentTimeMillis());
+		Date expriationDate = (Date) date.clone();
 		//Calendar.set(Calendar.YEAR, Calendar.get(Calendar.YEAR) + years_valid)).newDateCalendar.get(Calendar.YEAR) - 1900.
-		exDate.setYear(exDate.getYear()+years_valid);
+		expriationDate.setYear(expriationDate.getYear()+years_valid);
 		
-		return exDate.after(curr);
+		return expriationDate.after(currentDate);
 	}
 
+	/**
+	 * Increments food quantity in database 
+	 * @param food_id food quantity to increment
+	 * @param quantity what to increment quantity by
+	 */
 	public static void buyFood(int food_id, double quantity)
 	{
-		
-		
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
 		try{
+			//Only admin has capability of purchasing food
 			if(!Session.admin)
 				throw new Exception("Must be admin to purchase food.");
 			
@@ -166,6 +192,7 @@ public class FoodRepo {
 			
 			rs = stmt.executeQuery();
 			
+			//Throw error for invalid food_id
 			if(!rs.next())
 				throw new Exception("The following food_id does not exist: " + food_id);
 			
@@ -181,14 +208,14 @@ public class FoodRepo {
 			stmt.setInt(2, food_id);
 			stmt.execute();
 							
-			
 		}catch(Exception e){
 			Session.log.warning("SQL Error: " + e.toString());
 			System.out.println("Something went wrong: " + e.getMessage());
 		} finally {
 			//close everything
 			try {
-				if(stmt!=null) stmt.close();
+				if(stmt!=null) 	stmt.close();
+				if(rs!=null)	rs.close();
 			}catch(Exception e) {
 				//If closing errors out
 				Session.log.warning("DB Closing Error: " + e.toString());

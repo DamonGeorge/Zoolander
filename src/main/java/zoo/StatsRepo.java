@@ -243,15 +243,55 @@ public class StatsRepo {
 	}
 	
 	
-	
-	
-	
 	/**
-	 * Ideas
-	 * TODO: food stats - foods with most animals and foods with least/no animals (with subquery and having)
-	 * TODO: food stats - costs
-	 * TODO: food stats - quantities (such as low quantities)
-	 * 
+	 * 1. Shows stats for foods that feed the most number of animals
+	 * 2. Displays food which currently is low in stock (<=100 pounds)
 	 */
+	public static void foodStats() {
+		PreparedStatement lowFoodStmt = null;
+		PreparedStatement mostStmt = null;
+		ResultSet lowFoodRs = null;
+		ResultSet mostRs = null;
+
+		try{
+			mostStmt = Session.conn.prepareStatement(
+							"SELECT se.food_id AS ID, f.name AS Name, COUNT(*) AS Animals "
+							+ "FROM food f NATURAL JOIN species_eats se JOIN animal a USING(species_name) "
+							+ "GROUP BY se.food_id, f.name "
+							+ "HAVING Animals >= ALL(SELECT COUNT(*) "
+							+ "							FROM species_eats se1 JOIN animal a1 USING(species_name) "
+							+ "							GROUP BY se1.food_id)");
+			mostRs = mostStmt.executeQuery();
+			
+			lowFoodStmt = Session.conn.prepareStatement(
+					"SELECT food_id, name, brand, quantity "
+					+ "FROM food "
+					+ "WHERE quantity <= 100");
+			lowFoodRs = lowFoodStmt.executeQuery();
+			
+			
+			TableBuilder table1 = AsciiTableHelper.getAsciiTable(mostRs, false);
+			TableBuilder table2 = AsciiTableHelper.getAsciiTable(lowFoodRs, false);
+			table1.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
+			table2.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
+			
+			AsciiTableHelper.printDoubleTable(table1, "Food(s) that Feed the Most Animals: ", table2, "Food Stores Running Low: ", Session.terminalWidth *2/3);
+			
+		} catch (Exception e) {
+			Session.log.warning("SQL Error: " + e.toString());
+			System.out.println("Something went wrong: " + e.getMessage());
+		} finally {
+			//close everything
+			try {
+				if(lowFoodStmt!=null) 	lowFoodStmt.close();
+				if(lowFoodRs!=null)		lowFoodRs.close();
+				if(mostStmt!=null) 		mostStmt.close();
+				if(mostRs!=null)		mostRs.close();
+			}catch(Exception e) {
+				//If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
+			}
+		}
+	}
 	
 }

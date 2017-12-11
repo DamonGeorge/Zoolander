@@ -72,7 +72,6 @@ public class Session {
 		 * TODOS
 		 * TODO: employee activate/deactivate ???
 		 * TODO: employee add/remove trainings ???
-		 * TODO: food - feed and purchase
 		 * TODO: more stats functionality
 		 * TODO: view species, enclosure, food ??? - prob unnecessary
 		 * TODO: special employee update function - remove??
@@ -83,7 +82,7 @@ public class Session {
 		//executeSQLScript("DatabaseCreates.sql");
 		//executeSQLScript("DatabaseInserts.sql");
 		
-		FoodRepo.buyFood(1, 10.0);
+		StatsRepo.foodStats();
 		
 		//=======================================================================
 		//Disable some default commands from the spring shell
