@@ -176,3 +176,18 @@
 1512693484049:stats --salaries
 1512693494744:stats --species
 1512693516431:exit
+1512694777086:animals --search-employee damon
+1512694782117:animals --search-employee thony
+1512694785413:exit
+1512849024635:employee --add
+1512849029346:employee
+1512849031425:help
+1512849037625:employees --add
+1512849325239:exit
+1512849338095:help
+1512849345414:species --list
+1512849352382:stats --enclosures
+1512849356254:stats --handlers
+1512849370701:stats --salaries
+1512849380613:stats --species
+1512849414108:exit

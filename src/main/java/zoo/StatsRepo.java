@@ -153,7 +153,7 @@ public class StatsRepo {
 					   "SELECT s.species_name, s.common_name, COUNT(*) AS Animals "
 					   + "FROM species s JOIN animal a USING (species_name) "
 					   + "GROUP BY s.species_name, s.common_name "
-					   + "ORDER BY Animals ");
+					   + "ORDER BY Animals DESC");
 			
 			noAnimalQuery  = Session.conn.prepareStatement(
 						"SELECT s.species_name, s.common_name "
