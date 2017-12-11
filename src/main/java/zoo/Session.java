@@ -80,8 +80,10 @@ public class Session {
 		
 		//FOR TESTING PURPOSES JUST CALL WORKER METHODS YOUR TESTING HERE
 		//=======================================================================
-		executeSQLScript("DatabaseCreates.sql");
-		executeSQLScript("DatabaseInserts.sql");
+		//executeSQLScript("DatabaseCreates.sql");
+		//executeSQLScript("DatabaseInserts.sql");
+		
+		FoodRepo.feedAnimal(2, 5);
 		
 		//=======================================================================
 		//Disable some default commands from the spring shell

@@ -68,7 +68,7 @@ public class FoodRepo {
 		return exists;
 	}
 	
-	public static void feedAnimal(int food_id, int animal_id)
+	public static void feedAnimal(int animal_id, int food_id)
 	{
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -78,8 +78,8 @@ public class FoodRepo {
 			//first check for admin privileges
 			if(!Session.admin){
 				statement = Session.conn.prepareStatement(
-						"SELECT et.date_trained, et.years_to_renew"
-						+ "FROM animal a JOIN species s USING(species_name) JOIN employee_training et USING(species_name) "
+						"SELECT et.date_trained, et.years_to_renew "
+						+ "FROM animal a JOIN employee_training et USING(species_name) "
 						+ "WHERE et.username=? AND a.animal_id=?");	
 				statement.setString(1, Session.currentUser);
 				statement.setInt(2, animal_id);
@@ -89,33 +89,44 @@ public class FoodRepo {
 				//if training is still valid
 				if(!result.next() || !isTrainingValid(result.getDate(1), result.getInt(2))){
 					//throw some error, employee can't feed this animal
-					throw new SQLException("Employee not trained to feed this species.");
+					throw new Exception("Employee not trained to feed this species.");
 				}
 				statement.close();	statement = null;
 				result.close(); 	result = null;
 			}
 			statement = Session.conn.prepareStatement(
-						"UPDATE f, a "
-						+ "SET a.last_feeding=?, f.quantity=("
-						+ "		SELECT f1.quantity-(a1.food_quantity/f1.nutritional_index) "
-						+ "		FROM food f1 NATURAL JOIN species_eats se NATURAL JOIN animal a1 "
-						+ "		WHERE f.food_id=? AND a.animal_id=?) "
-						+ "FROM food f, animal a "
+					"SELECT f.quantity, a.food_quantity, f.nutritional_index "
+					+ "FROM food f NATURAL JOIN species_eats se JOIN animal a USING(species_name) "
+					+ "WHERE f.food_id=? AND a.animal_id=?");
+			statement.setInt(1, food_id);
+			statement.setInt(2, animal_id);
+			result = statement.executeQuery();
+			
+			if(!result.next())
+				throw new Exception("Connot feed this animal species with food_id=" + food_id);
+			
+			double newQuantity = result.getDouble(1)-(result.getDouble(2)/result.getDouble(3));
+			
+			if(newQuantity<0)
+				throw new Exception("Not enough food to feed this animal!");
+			
+			
+			statement = Session.conn.prepareStatement(
+						"UPDATE food f, animal a "
+						+ "SET f.quantity=?, a.last_feeding=? "
 						+ "WHERE f.food_id=? AND a.animal_id=?"
 						);
-			statement.setDate(1, new Date(System.currentTimeMillis()));
-			statement.setInt(2, food_id);
-			statement.setInt(3, animal_id);
-			statement.setInt(4, food_id);
-			statement.setInt(5, animal_id);
+			statement.setDouble(1, newQuantity);
+			statement.setDate(2, new Date(System.currentTimeMillis()));
+			statement.setInt(3, food_id);
+			statement.setInt(4, animal_id);
+			statement.execute();
 			
-			if(!statement.execute())
-				throw new SQLException("Invalid food for species type.");
 		} 
 		catch (Exception e)
 		{
 			Session.log.warning("SQL Error: " + e.toString());
-			System.out.println("Something went wrong!");
+			System.out.println("Something went wrong: " + e.getMessage());
 		} finally { //close everything
 			try {
 				if(result!=null) 	result.close();
@@ -137,6 +148,13 @@ public class FoodRepo {
 		
 		return exDate.after(curr);
 	}
+
+	public static void buyFood(int food_id, double quantity)
+	{
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+	}
+
 }
 
 
