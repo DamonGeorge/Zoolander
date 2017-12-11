@@ -3,8 +3,6 @@ package zoo;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.springframework.shell.table.BorderStyle;
 import org.springframework.shell.table.TableBuilder;
 
@@ -151,8 +149,52 @@ public class FoodRepo {
 
 	public static void buyFood(int food_id, double quantity)
 	{
+		
+		
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		
+		try{
+			if(!Session.admin)
+				throw new Exception("Must be admin to purchase food.");
+			
+			stmt = Session.conn.prepareStatement(
+					"SELECT cost "
+					+ "FROM food "
+					+ "WHERE food_id=?");
+			stmt.setInt(1, food_id);
+			
+			rs = stmt.executeQuery();
+			
+			if(!rs.next())
+				throw new Exception("The following food_id does not exist: " + food_id);
+			
+			//TODO:: retrieve cost and calculate total cost for purchase
+			//		currently no zoo funds
+			
+			stmt.close();
+			stmt = Session.conn.prepareStatement(
+					"UPDATE food "
+					+ "SET quantity=quantity+? "
+					+ "WHERE food_id=?");
+			stmt.setDouble(1, quantity);
+			stmt.setInt(2, food_id);
+			stmt.execute();
+							
+			
+		}catch(Exception e){
+			Session.log.warning("SQL Error: " + e.toString());
+			System.out.println("Something went wrong: " + e.getMessage());
+		} finally {
+			//close everything
+			try {
+				if(stmt!=null) stmt.close();
+			}catch(Exception e) {
+				//If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
+			}
+		}
+		
 	}
 
 }

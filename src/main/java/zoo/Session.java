@@ -83,7 +83,7 @@ public class Session {
 		//executeSQLScript("DatabaseCreates.sql");
 		//executeSQLScript("DatabaseInserts.sql");
 		
-		FoodRepo.feedAnimal(2, 5);
+		FoodRepo.buyFood(1, 10.0);
 		
 		//=======================================================================
 		//Disable some default commands from the spring shell
