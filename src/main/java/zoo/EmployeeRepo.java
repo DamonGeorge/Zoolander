@@ -353,6 +353,10 @@ public class EmployeeRepo {
     
     public static void trainEmployee(String username, String[] newValues)
     {
+    	if(!Session.admin){
+    		System.out.println("Only an admin can train employees.");
+    		return;
+    	}
     	PreparedStatement stmt = null;
     	ResultSet rs = null;
     	try {
