@@ -352,6 +352,12 @@ public class EmployeeRepo {
 		}	
     }
     
+    /**
+     * either updates an employee's training date, or creates a new row
+     * if the employee was not previously trained to handle a given species
+     * @param username	employee to be trained
+     * @param newValues	training info
+     */
     public static void trainEmployee(String username, String[] newValues)
     {
     	if(!Session.admin){

@@ -76,8 +76,7 @@ public class Session {
 		
 		//FOR TESTING PURPOSES JUST CALL WORKER METHODS YOUR TESTING HERE
 		//=======================================================================
-		//executeSQLScript("DatabaseCreates.sql");
-		//executeSQLScript("DatabaseInserts.sql");
+		
 		
 		
 		

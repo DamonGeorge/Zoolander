@@ -114,7 +114,11 @@ public class SpeciesRepo {
 		}	
     }
 
-    
+    /**
+     * PRints two tables of handlers and foods that are valid with
+     * particular species
+     * @param species the species to check
+     */
     public static void speciesHandlerAndFoodStats(String species){
 		PreparedStatement handleStmt = null;
 		ResultSet handleRs = null;
