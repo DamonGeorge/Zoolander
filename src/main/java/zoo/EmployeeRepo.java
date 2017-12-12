@@ -351,4 +351,53 @@ public class EmployeeRepo {
 		}	
     }
     
+    public static void trainEmployee(String username, String[] newValues)
+    {
+    	PreparedStatement stmt = null;
+    	ResultSet rs = null;
+    	try {
+    		stmt = Session.conn.prepareStatement(
+    				"SELECT * "
+    				+ "FROM employee_training "
+    				+ "WHERE username=? AND species_name=?");
+    		stmt.setString(1, username);
+    		stmt.setString(2, newValues[0]);
+    		rs = stmt.executeQuery();
+    		stmt.close();
+    		
+    		//if employee previously trained, update training info
+    		if(rs.next()){
+    			stmt = Session.conn.prepareStatement(
+        				"UPDATE employee_training "
+        				+ "SET date_trained=?, years_to_renew=? "
+        				+ "WHERE username=? AND species_name=?");
+    			stmt.setString(1, newValues[1]);
+    			stmt.setString(2, newValues[2]);
+    			stmt.setString(3, username);
+    			stmt.setString(4, newValues[0]);
+    		} else { //otherwise insert new row to employee_training
+    			stmt = Session.conn.prepareStatement(
+    					"INSERT INTO employee_training VALUES (?,?,?,?)"
+    					);
+    			stmt.setString(1,  username);
+    			for(int i=0; i<=2; i++){
+    				stmt.setString(i+2, newValues[i]);
+    			}
+    		}
+    		stmt.execute();
+    		
+    		
+    		
+    	} catch (Exception e) {
+			Session.log.warning("SQL Error: " + e.toString());
+			System.out.println("Something went wrong! " + e.getMessage() );
+		} finally { //close everything
+			try {
+				if(stmt!=null) stmt.close();
+				if(rs!=null) rs.close();
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
+			}
+		}	
+    }
 }

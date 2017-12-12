@@ -22,7 +22,7 @@ public class ZooCommands {
             : Availability.unavailable("Admin priveleges required");
     }
    
-    @ShellMethod(value="Employee Functions: list, search, add, update, view", key={"employees", "emp"} )
+    @ShellMethod(value="Employee Functions: list, search, add, update, view, train", key={"employees", "emp"} )
     @ShellMethodAvailability("adminCheck") 
     public void employeeCommands(	
     		@ShellOption(help="List all employees")boolean list, 
@@ -31,7 +31,8 @@ public class ZooCommands {
 			@ShellOption(help="Update an employee's information", defaultValue="__NULL__")String update,
 			@ShellOption(help="Search employees by their details", defaultValue="__NULL__")String searchEmployee, 
 			@ShellOption(help="Search employees by the animals they handle", defaultValue="__NULL__")String searchAnimal, 
-			@ShellOption(help="Search employees by the enclosures they work in", defaultValue="__NULL__")String searchEnclosure 
+			@ShellOption(help="Search employees by the enclosures they work in", defaultValue="__NULL__")String searchEnclosure,
+			@ShellOption(help="Update an employee's training", defaultValue="__NULL__")String train
 			 ) {
     
     	if(list) {
@@ -62,7 +63,18 @@ public class ZooCommands {
     		EmployeeRepo.searchEmployeesByAnimal(searchAnimal);
     	} else if (searchEnclosure != null) {
     		EmployeeRepo.searchEmployeesByEnclosure(searchEnclosure);
-    	} else {
+    	} else if (train != null) {
+    		if(!EmployeeRepo.employeeExists(train)){
+    			System.out.println("Employee does not exist!");
+    			return;
+    		}
+    		String values[] = new String[3];
+    		if(!InputHandler.getTrainingInfo(values))
+    			return;
+    		
+    		EmployeeRepo.trainEmployee(train, values);
+    		
+     	}else {
     		System.out.println("Please select an option!" );
     	}
     }
@@ -235,7 +247,7 @@ public class ZooCommands {
     	}
     }
     
-    @ShellMethod(value="Statistic Functions: employee", key={"stat", "stats"} )
+    @ShellMethod(value="Statistic Functions: salaries, handlers, species, enclosures,\n\t\t\t\t\t  food", key={"stat", "stats"} )
     public void statCommands(	
     		@ShellOption(help="Salary Statistics") boolean salaries,
     		@ShellOption(help="Number of trainings per employee") boolean handlers,

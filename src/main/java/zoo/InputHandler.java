@@ -33,8 +33,7 @@ public class InputHandler {
 		values[7] = Session.reader.readLine("Admin (y/n)......: ").toLowerCase().equals("y") ? "1" : "0";
 		return true;
 	}
-	
-	
+		
 	public static boolean getAnimalInfo(String[] values, boolean newAnimal) {
 		int i = 0;
 		if(newAnimal) {
@@ -146,6 +145,25 @@ public class InputHandler {
 		value[0] = Session.reader.readLine("Animal's ID: ");
 		if(!value[0].matches("\\d+(\\.\\d*)?")){
 			System.out.println("Animal's ID must be a number!");
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean getTrainingInfo(String[] values){
+		values[0] = Session.reader.readLine("Species Trained to Handle....: ");
+		if(!SpeciesRepo.speciesExists(values[0])){
+			System.out.println("This species does not exist! ");
+			return false;
+		}
+		values[1] = Session.reader.readLine("Date of Training (yyyy-mm-dd): ");
+		if(!values[1].matches("\\d\\d\\d\\d-\\d\\d-\\d\\d")){
+			System.out.println("Input a valid date!" );
+			return false;
+		}
+		values[2] = Session.reader.readLine("Year(s) Valid................: ");
+		if(!values[2].matches("\\d+")){
+			System.out.println("Must enter a number! ");
 			return false;
 		}
 		return true;
