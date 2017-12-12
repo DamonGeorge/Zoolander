@@ -76,14 +76,10 @@ public class Session {
 		
 		//FOR TESTING PURPOSES JUST CALL WORKER METHODS YOUR TESTING HERE
 		//=======================================================================
-		executeSQLScript("DatabaseCreates.sql");
-		executeSQLScript("DatabaseInserts.sql");
+		//executeSQLScript("DatabaseCreates.sql");
+		//executeSQLScript("DatabaseInserts.sql");
 		
-		//StatsRepo.foodStats();
-		String x[] = {"Lycaon pictus", "2016-05-05", "69"};
-		EmployeeRepo.trainEmployee(currentUser, x);
-		String y[] = {"Lophoaetus occipitalis", "2015-02-02", "69"};
-		EmployeeRepo.trainEmployee(currentUser, y);
+		
 		
 		
 		

@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 /**
  * Contains the worker methods for species functionality
  * @author damongeorge
- *
+ * @author anthonyniehuser
  */
 public class SpeciesRepo {
 
@@ -114,4 +114,49 @@ public class SpeciesRepo {
 		}	
     }
 
+    
+    public static void speciesHandlerAndFoodStats(String species){
+		PreparedStatement handleStmt = null;
+		ResultSet handleRs = null;
+		PreparedStatement foodStmt = null;
+		ResultSet foodRs = null;
+		try{
+			handleStmt =Session.conn.prepareStatement(
+					"SELECT DISTINCT e.username, CONCAT(CONCAT(e.first_name, ' '), e.last_name) AS Name "
+					+ "FROM employee e NATURAL JOIN employee_training et1 "
+					+ "WHERE et1.species_name=? OR e.admin=1");
+			handleStmt.setString(1, species);
+			handleRs = handleStmt.executeQuery();
+			
+			foodStmt = Session.conn.prepareStatement(
+					"SELECT f.food_id, f.name, f.brand, f.quantity, f.cost "
+					+ "FROM food f NATURAL JOIN species_eats se "
+					+ "WHERE se.species_name=?");
+			foodStmt.setString(1, species);
+			foodRs = foodStmt.executeQuery();
+			
+			System.out.println("Handlers for: " + species);
+			AsciiTableHelper.printBasicTable(handleRs);
+			System.out.println("Food for: " + species);
+			AsciiTableHelper.printBasicTable(foodRs);
+			
+			
+			//AsciiTableHelper.printDoubleTable(table1, "Handlers for: " + species, table2, "Food for: " + species, Session.terminalWidth *1/2);
+			
+		} catch (Exception e) {
+			Session.log.warning("SQL Error: " + e.toString());
+			System.out.println("Something went wrong: " + e.getMessage());
+		} finally {
+			//close everything
+			try {
+				if(handleStmt!=null) 	handleStmt.close();
+				if(handleRs!=null)		handleRs.close();
+			}catch(Exception e) {
+				//If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
+			}
+		}
+		
+		
+	}
 }

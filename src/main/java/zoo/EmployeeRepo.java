@@ -9,6 +9,7 @@ import org.springframework.shell.table.TableBuilder;
 /**
  * Contains the database query methods for employee functionality
  * @author damongeorge
+ * @author anthonyniehuser
  *
  */
 public class EmployeeRepo {

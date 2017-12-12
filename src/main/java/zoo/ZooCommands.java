@@ -174,10 +174,11 @@ public class ZooCommands {
     	}
     }
     
-    @ShellMethod(value="Species Functions: list, add", key={"species", "sp"} )
+    @ShellMethod(value="Species Functions: list, add, info", key={"species", "sp"} )
     public void speciesCommands(	
     		@ShellOption(help="List all species") boolean list,
-    		@ShellOption(help="Add a new species") boolean add
+    		@ShellOption(help="Add a new species") boolean add,
+    		@ShellOption(help="Feeding Info", defaultValue="__NULL__") String info 
     		) {
     
     	if(list) {
@@ -188,7 +189,12 @@ public class ZooCommands {
     		InputHandler.getSpeciesInfo(values);
     		
     		SpeciesRepo.addSpecies(values);
-    	
+    	}else if(info!=null){
+    		if(!SpeciesRepo.speciesExists(info)){
+    			System.out.println("This species does not exist!");
+    			return;
+    		}
+    		SpeciesRepo.speciesHandlerAndFoodStats(info);
     	} else {
     		System.out.println("Please select an option!" );
     	}
