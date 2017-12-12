@@ -2,37 +2,37 @@
 
 -- 20 currently (5 inactive)
 INSERT INTO employee VALUES 
-('tdog',			'Anthony',		'Niehuser', 	'1996-09-09', 		'tdog@gmail.com', 				75000, 	true, 	true),
-('bro',				'Damon',		'George',		'1995-06-04', 		'thedamon@example.com', 		50000, 	true, 	false),
-('gflaxman0',		'Glory',		'Flaxman',		'1969-02-01',		'gflaxman0@wordpress.org',		16054,	true,	false),	
-('gvanderkrui1',	'Grantley',		'Van der Krui',	'1974-10-23',		'gvanderkrui1@sakura.ne.jp',	18001,	true,	false),	
-('sfansy2',			'Sacha',		'Fansy',		'1980-05-26',		'sfansy2@qq.com',				57666,	true,	false),	
-('jtooher3',		'Jami',			'Tooher',		'1964-09-18',		'jtooher3@storify.com',			29786,	true,	false),	
-('zbeedon4',		'Zandra',		'Beedon',		'1986-03-13',		'zbeedon4@amazon.co.jp',		54816,	true,	false),	
-('mcurneen5',		'Maia',			'Curneen',		'1966-12-14',		'mcurneen5@wikimedia.org',		49578,	true,	false),	
-('asalan6',			'Arnie',		'Salan',		'1977-10-13',		'asalan6@cmu.edu',				75396,	true,	true),	
-('hfriary7',		'Haleigh',		'Friary',		'1976-12-15',		'hfriary7@moonfruit.com',		44525,	true,	false),	
-('amcfie8',			'Anni',			'McFie',		'1973-08-22',		'amcfie8@disqus.com',			35666,	true,	false),	
-('kkidsone',		'Krystle',		'Kidson',		'1974-03-27',		'kkidsone@google.pl',			73612,	true,	true),	
-('mbochf',			'Malena',		'Boch',			'1979-07-29',		'mbochf@pen.io',				61230,	true,	false),	
-('btyzackg',		'Berenice',		'Tyzack',		'1970-07-05',		'btyzackg@godaddy.com',			19274,	true,	false),	
-('dhaldonh',		'Dori',			'Haldon',		'1989-04-09',		'dhaldonh@addtoany.com',		27422,	true,	false),	
-('gwoodcrofti',		'Gardy',		'Woodcroft',	'1968-12-14',		'gwoodcrofti@salon.com',		89563,	false,	true),	
-('lrentonj',		'Laura',		'Renton',		'1985-01-07',		'lrentonj@fastcompany.com',		29903,	false,	false),	
-('jlafrentzk',		'Jeniece',		'Lafrentz',		'1990-05-22',		'jlafrentzk@icio.us',			25849,	false,	false),	
-('gcadwelll',		'Ginevra',		'Cadwell',		'1983-09-14',		'gcadwelll@wikimedia.org',		51682,	false,	false),	
-('icondellm',		'Ignacius',		'Condell',		'1989-03-07',		'icondellm@wix.com',			30888,	false,	false);
+('tdog',            'Anthony',      'Niehuser',     '1996-09-09',       'tdog@gmail.com',               75000,  true,   true),
+('bro',             'Damon',        'George',       '1995-06-04',       'thedamon@example.com',         50000,  true,   false),
+('gflaxman0',       'Glory',        'Flaxman',      '1969-02-01',       'gflaxman0@wordpress.org',      16054,  true,   false), 
+('gvanderkrui1',    'Grantley',     'Van der Krui', '1974-10-23',       'gvanderkrui1@sakura.ne.jp',    18001,  true,   false), 
+('sfansy2',         'Sacha',        'Fansy',        '1980-05-26',       'sfansy2@qq.com',               57666,  true,   false), 
+('jtooher3',        'Jami',         'Tooher',       '1964-09-18',       'jtooher3@storify.com',         29786,  true,   false), 
+('zbeedon4',        'Zandra',       'Beedon',       '1986-03-13',       'zbeedon4@amazon.co.jp',        54816,  true,   false), 
+('mcurneen5',       'Maia',         'Curneen',      '1966-12-14',       'mcurneen5@wikimedia.org',      49578,  true,   false), 
+('asalan6',         'Arnie',        'Salan',        '1977-10-13',       'asalan6@cmu.edu',              75396,  true,   true),  
+('hfriary7',        'Haleigh',      'Friary',       '1976-12-15',       'hfriary7@moonfruit.com',       44525,  true,   false), 
+('amcfie8',         'Anni',         'McFie',        '1973-08-22',       'amcfie8@disqus.com',           35666,  true,   false), 
+('kkidsone',        'Krystle',      'Kidson',       '1974-03-27',       'kkidsone@google.pl',           73612,  true,   true),  
+('mbochf',          'Malena',       'Boch',         '1979-07-29',       'mbochf@pen.io',                61230,  true,   false), 
+('btyzackg',        'Berenice',     'Tyzack',       '1970-07-05',       'btyzackg@godaddy.com',         19274,  true,   false), 
+('dhaldonh',        'Dori',         'Haldon',       '1989-04-09',       'dhaldonh@addtoany.com',        27422,  true,   false), 
+('gwoodcrofti',     'Gardy',        'Woodcroft',    '1968-12-14',       'gwoodcrofti@salon.com',        89563,  false,  true),  
+('lrentonj',        'Laura',        'Renton',       '1985-01-07',       'lrentonj@fastcompany.com',     29903,  false,  false), 
+('jlafrentzk',      'Jeniece',      'Lafrentz',     '1990-05-22',       'jlafrentzk@icio.us',           25849,  false,  false), 
+('gcadwelll',       'Ginevra',      'Cadwell',      '1983-09-14',       'gcadwelll@wikimedia.org',      51682,  false,  false), 
+('icondellm',       'Ignacius',     'Condell',      '1989-03-07',       'icondellm@wix.com',            30888,  false,  false);
 
 -- 9 currently (2 closed)
 INSERT INTO enclosure VALUES 
-(1, 'Rocky River', 		'Simulated Pine river', 			true),
-(2, 'African Plains', 	'Bouldered grass with few trees', 	true),
-(3, 'Dense Jungle', 	'South African Rainforest', 		true),
-(4, 'Reptiles', 		'Small encaged exhibits', 			true),
-(5, 'Open Trees', 		'Large Tree Playground', 			true),
-(6, 'The Aviary', 		'Bird Sanctuary', 					true),
-(7, 'Swamp', 			'Shallow stagnant water and brush', false),
-(8, 'Arctic Enclosure', 'Arctic', 							false);
+(1, 'Rocky River',      'Simulated Pine river',             true),
+(2, 'African Plains',   'Bouldered grass with few trees',   true),
+(3, 'Dense Jungle',     'South African Rainforest',         true),
+(4, 'Reptiles',         'Small encaged exhibits',           true),
+(5, 'Open Trees',       'Large Tree Playground',            true),
+(6, 'The Aviary',       'Bird Sanctuary',                   true),
+(7, 'Swamp',            'Shallow stagnant water and brush', false),
+(8, 'Arctic Enclosure', 'Arctic',                           false);
 
 -- 50 species
 -- need some without any animals

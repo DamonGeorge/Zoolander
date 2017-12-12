@@ -2,9 +2,7 @@ package zoo;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -243,6 +240,7 @@ public class Session {
 	 * @param filename 
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private static void executeSQLScript(String filename)
 	{
 		Statement stmt = null;
