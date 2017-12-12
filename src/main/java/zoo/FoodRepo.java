@@ -43,7 +43,7 @@ public class FoodRepo {
 	 * @param id	food_id to check
 	 * @return
 	 */
-	public static boolean foodExists(int id){
+	public static boolean foodExists(String id){
 		PreparedStatement query = null;
 		ResultSet result = null;
 		boolean exists = false;
@@ -52,7 +52,7 @@ public class FoodRepo {
 			query = Session.conn.prepareStatement(
 					"SELECT food_id "
 					+ "FROM food WHERE food_id=?");
-			query.setInt(1, id);
+			query.setString(1, id);
 			result = query.executeQuery();
 			
 			if(result.next())
@@ -80,7 +80,7 @@ public class FoodRepo {
 	 * @param animal_id	the animal to be fed
 	 * @param food_id	the type of food to feed the animal
 	 */
-	public static void feedAnimal(int animal_id, int food_id)
+	public static void feedAnimal(String animal_id, String food_id)
 	{
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -94,7 +94,7 @@ public class FoodRepo {
 						+ "FROM animal a JOIN employee_training et USING(species_name) "
 						+ "WHERE et.username=? AND a.animal_id=?");	
 				statement.setString(1, Session.currentUser);
-				statement.setInt(2, animal_id);
+				statement.setString(2, animal_id);
 				result = statement.executeQuery();
 				
 				//check if employee is trained to handle that species or
@@ -109,8 +109,8 @@ public class FoodRepo {
 					"SELECT f.quantity, a.food_quantity, f.nutritional_index "
 					+ "FROM food f NATURAL JOIN species_eats se JOIN animal a USING(species_name) "
 					+ "WHERE f.food_id=? AND a.animal_id=?");
-			statement.setInt(1, food_id);
-			statement.setInt(2, animal_id);
+			statement.setString(1, food_id);
+			statement.setString(2, animal_id);
 			result = statement.executeQuery();
 			
 			//Throw error for invalid food and species combination
@@ -131,8 +131,8 @@ public class FoodRepo {
 						);
 			statement.setDouble(1, newQuantity);
 			statement.setDate(2, new Date(System.currentTimeMillis()));
-			statement.setInt(3, food_id);
-			statement.setInt(4, animal_id);
+			statement.setString(3, food_id);
+			statement.setString(4, animal_id);
 			statement.execute();
 			
 		} 
@@ -151,8 +151,8 @@ public class FoodRepo {
 	}
 	
 
+	//TODO:: implement Calendar class to remove deprecated method calls
 	/**
-	 * TODO:: implement Calendar class to remove deprecated method calls
 	 * Determines if an employee's training is still valid
 	 * @param date	date that employee was trained
 	 * @param years_valid	how many years the training is valid
@@ -174,7 +174,7 @@ public class FoodRepo {
 	 * @param food_id food quantity to increment
 	 * @param quantity what to increment quantity by
 	 */
-	public static void buyFood(int food_id, double quantity)
+	public static void buyFood(String food_id, String quantity)
 	{
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -188,7 +188,7 @@ public class FoodRepo {
 					"SELECT cost "
 					+ "FROM food "
 					+ "WHERE food_id=?");
-			stmt.setInt(1, food_id);
+			stmt.setString(1, food_id);
 			
 			rs = stmt.executeQuery();
 			
@@ -204,8 +204,8 @@ public class FoodRepo {
 					"UPDATE food "
 					+ "SET quantity=quantity+? "
 					+ "WHERE food_id=?");
-			stmt.setDouble(1, quantity);
-			stmt.setInt(2, food_id);
+			stmt.setString(1, quantity);
+			stmt.setString(2, food_id);
 			stmt.execute();
 							
 		}catch(Exception e){
@@ -224,6 +224,35 @@ public class FoodRepo {
 		
 	}
 
+	/**
+	 * Adds a new food to the database
+	 * @param newFood array of length 6 containing valid DB insert info
+	 */
+	public static void addFood(String[] newFood)
+	{
+		PreparedStatement stmt = null;
+		
+		try{
+			stmt = Session.conn.prepareStatement(
+					"INSERT INTO food VALUES(?,?,?,?,?,?)");
+			
+			for(int i=1; i<=6; i++){
+				stmt.setString(i, newFood[i-1]);
+			}
+			
+			stmt.execute();
+			
+		} catch (Exception e) {
+			Session.log.warning("SQL Error: " + e.toString());
+			System.out.println("Something went wrong!");
+		} finally { //close everything
+			try {
+				stmt.close();
+			}catch(Exception e) { //If closing errors out
+				Session.log.warning("DB Closing Error: " + e.toString());
+			}
+		}	
+	}
 }
 
 

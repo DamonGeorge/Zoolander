@@ -182,7 +182,7 @@ public class ZooCommands {
     	}
     }
     
-    @ShellMethod(value="Food Functions: list, add, purchase", key={"food", "fd"} )
+    @ShellMethod(value="Food Functions: list, add, purchase, feed", key={"food", "fd"} )
     public void foodCommands(	
     		@ShellOption(help="List all foods") boolean list,
     		@ShellOption(help="Add a new food") boolean add,
@@ -193,12 +193,43 @@ public class ZooCommands {
     	if(list) {
     		FoodRepo.listAllFood();
     	} else if (add) {
-    		//TODO: food add functions
+    		String values[] = new String[6];
+    		if(!InputHandler.getFoodInfo(values)){
+    			return;
+    		}
+    		
+    		FoodRepo.addFood(values);
     	
     	} else if (purchase != null) { 
-    		//TODO: food purchase function
+    		if(!purchase.matches("\\d+")){
+    			System.out.println("Must input a number for food_id");
+    			return;
+    		}
+    		if(!FoodRepo.foodExists(purchase)){
+    			System.out.println("Food does not exist.");
+    			return;
+    		}
+    		String quantity[] = new String[1];
+    		if(!InputHandler.getFoodQuanity(quantity))
+    			return;
+    		
+    		FoodRepo.buyFood(purchase, quantity[0]);
+    		
     	} else if (feed != null) {
-    		//Todo: feed function
+    		if(!feed.matches("\\d+")){
+    			System.out.println("Must input a number for food_id.");
+    			return;
+    		}
+    		if(!FoodRepo.foodExists(feed)){
+    			System.out.println("Food does not exist.");
+    			return;
+    		}
+    		String animal[] = new String[1];
+    		if(!InputHandler.getAnimalID(animal))
+    			return;
+    		
+    		FoodRepo.feedAnimal(animal[0], feed);
+    		
     	} else {
     		System.out.println("Please select an option!" );
     	}
@@ -209,9 +240,9 @@ public class ZooCommands {
     		@ShellOption(help="Salary Statistics") boolean salaries,
     		@ShellOption(help="Number of trainings per employee") boolean handlers,
     		@ShellOption(help="Species Statistics") boolean species,
-    		@ShellOption(help="Enclosure Statistics") boolean enclosures
+    		@ShellOption(help="Enclosure Statistics") boolean enclosures,
+    		@ShellOption(help="Food Statistics") boolean food
     		) {
-    	//TODO: food stats
     	if(salaries) {
     		StatsRepo.salaryStats();
     	} else if (handlers) {
@@ -220,6 +251,8 @@ public class ZooCommands {
     		StatsRepo.speciesStats();
     	} else if (enclosures) {
     		StatsRepo.enclosureStats();
+    	} else if (food) {
+    		StatsRepo.foodStats();
     	} else {
     		System.out.println("Please select an option!" );
     	}

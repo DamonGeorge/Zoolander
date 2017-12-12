@@ -270,12 +270,17 @@ public class StatsRepo {
 			lowFoodRs = lowFoodStmt.executeQuery();
 			
 			
-			TableBuilder table1 = AsciiTableHelper.getAsciiTable(mostRs, false);
-			TableBuilder table2 = AsciiTableHelper.getAsciiTable(lowFoodRs, false);
-			table1.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-			table2.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-			
-			AsciiTableHelper.printDoubleTable(table1, "Food(s) that Feed the Most Animals: ", table2, "Food Stores Running Low: ", Session.terminalWidth *2/3);
+	
+			System.out.println("Food(s) that feed the most animals: ");
+			AsciiTableHelper.printBasicTable(mostRs);
+			System.out.println("Food(s) that are running low: ");
+			if(!lowFoodRs.next())
+				System.out.println("All food is adequately stocked! ");
+			else {
+				lowFoodRs.beforeFirst();
+				AsciiTableHelper.printBasicTable(lowFoodRs);
+			}
+			//AsciiTableHelper.printDoubleTable(table1, "Food(s) that Feed the Most Animals: ", table2, "Food Stores Running Low: ", Session.terminalWidth *2/3);
 			
 		} catch (Exception e) {
 			Session.log.warning("SQL Error: " + e.toString());

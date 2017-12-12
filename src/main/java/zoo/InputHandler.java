@@ -109,6 +109,46 @@ public class InputHandler {
 		return true;
 	}
 	
+	public static boolean getFoodInfo(String[] values) {
+		values[0] = Session.reader.readLine("Food_ID.........: ");
+		if(!values[0].matches("\\d+") || FoodRepo.foodExists(values[0])){
+			System.out.println("Food of id: " + values[0] + "already exists!");
+			return false;
+		}
+		values[1] = Session.reader.readLine("Food Name.......: ");
+		values[2] = Session.reader.readLine("Food Brand......: ");
+		values[3] = Session.reader.readLine("Food Cost.......: ");
+		if(!values[3].matches("\\d+(\\.\\d*)?")) {
+			System.out.println("Please input a number for Food Cost.");
+			return false;
+		}
+		values[4] = "0";
+		values[5] = Session.reader.readLine("Nutritional Index: ");
+		if(!values[5].matches("\\d+(\\.\\d*)?")) {
+			System.out.println("Please input a number for Food Cost.");
+			return false;
+		}
+		return true;
+		
+	}
+
+	public static boolean getFoodQuanity(String[] value) {
+		value[0] = Session.reader.readLine("Quantity: ");
+		if(!value[0].matches("\\d+(\\.\\d*)?")){
+			System.out.println("Quntity must be a number!");
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean getAnimalID(String[] value) {
+		value[0] = Session.reader.readLine("Animal's ID: ");
+		if(!value[0].matches("\\d+(\\.\\d*)?")){
+			System.out.println("Animal's ID must be a number!");
+			return false;
+		}
+		return true;
+	}
 }
 
 
