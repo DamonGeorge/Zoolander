@@ -15,6 +15,7 @@ import org.springframework.shell.table.TableBuilder;
  * Food: quantities, ones that need to be purchased
  *
  * @author damongeorge
+ * @author anthonyniehuser
  *
  */
 public class StatsRepo {

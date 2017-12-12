@@ -10,6 +10,7 @@ import org.springframework.shell.standard.ShellOption;
  * All the zoo commands should go in this file
  * These functions will call the actual worker function in other classes
  * @author damongeorge
+ * @author anthonyniehuser
  *
  */
 @ShellComponent
@@ -66,7 +67,6 @@ public class ZooCommands {
     	}
     }
     
-
     @ShellMethod(value="Animal Functions: list, search, add, update, view", key={"animals", "an"} )
     public void animalCommands(	
     		@ShellOption(help="List all animals")boolean list, 

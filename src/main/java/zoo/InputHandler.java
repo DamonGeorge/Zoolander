@@ -4,6 +4,7 @@ package zoo;
 /**
  * Contains the methods that handle user input
  * @author damongeorge
+ * @author anthonyniehuser
  *
  */
 public class InputHandler {

@@ -6,6 +6,11 @@ import java.sql.ResultSet;
 import org.springframework.shell.table.BorderStyle;
 import org.springframework.shell.table.TableBuilder;
 
+/**
+ * Contains all methods related to food functionality
+ * @author anthonyniehuser
+ *
+ */
 public class FoodRepo {
 	
 	/**

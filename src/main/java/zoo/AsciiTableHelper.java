@@ -14,6 +14,7 @@ import org.springframework.shell.table.TableModelBuilder;
 /**
  * Provides helper functions for displaying Spring Ascii Tables from JDBC ResultSets
  * @author damongeorge
+ * @author anthonyniehuser
  *
  */
 public class AsciiTableHelper {
