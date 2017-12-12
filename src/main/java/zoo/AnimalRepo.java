@@ -262,8 +262,9 @@ public class AnimalRepo {
 			animalResult = animalQuery.executeQuery();
 			
 			if(animalResult.next())  { //If animal was found
+			
 				int animalColumns[] = {2,3,4,5,6,7}; //columns to display in left table
-				int speciesColumns[] = {1,8,9,10}; //columns to display in right table
+				int speciesColumns[] = {1,8,9}; //columns to display in right table
 				
 				//Build the animal and species tables
 				TableBuilder table1 = AsciiTableHelper.getAsciiTable(animalResult, true, animalColumns);
@@ -279,7 +280,7 @@ public class AnimalRepo {
 			
 		} catch (Exception e) {
 			Session.log.warning("SQL Error: " + e.toString());
-			System.out.println("Something went wrong!");
+			System.out.println("Something went wrong! " + e.getMessage());
 		} finally { //close everything
 			try {
 				animalResult.close();
