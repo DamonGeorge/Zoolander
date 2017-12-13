@@ -260,14 +260,15 @@ public class StatsRepo {
 							+ "FROM food f NATURAL JOIN species_eats se JOIN animal a USING(species_name) "
 							+ "GROUP BY se.food_id, f.name "
 							+ "HAVING Animals >= ALL(SELECT COUNT(*) "
-							+ "							FROM species_eats se1 JOIN animal a1 USING(species_name) "
-							+ "							GROUP BY se1.food_id)");
+																	+ "FROM species_eats se1 JOIN animal a1 USING(species_name) "
+																	+ "GROUP BY se1.food_id) "
+							+ "ORDER BY Animals");
 			mostRs = mostStmt.executeQuery();
 			
 			lowFoodStmt = Session.conn.prepareStatement(
 					"SELECT food_id, name, brand, quantity "
 					+ "FROM food "
-					+ "WHERE quantity <= 100");
+					+ "WHERE quantity <= 15");
 			lowFoodRs = lowFoodStmt.executeQuery();
 			
 			

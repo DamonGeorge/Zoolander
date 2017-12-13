@@ -62,8 +62,9 @@ public class Session {
 		}
 		
 		
-		System.out.println("\n====== Welcome To The Zoo ======");
-		
+		System.out.println("\n================================");
+		System.out.println(  "      Welcome To The Zoo!");
+		System.out.println(  "================================");
 		
 		/**
 		 * TODOS

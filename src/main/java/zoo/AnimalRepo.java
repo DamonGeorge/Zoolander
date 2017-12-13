@@ -249,31 +249,37 @@ public class AnimalRepo {
      * @param animalId 
      */
     public static void viewAnimal(String animalId) {
-    	PreparedStatement animalQuery = null;
-		ResultSet animalResult = null;
+    	PreparedStatement animalQuery = null, foodQuery = null;
+		ResultSet animalResult = null, foodResult = null;
     	
 		try {
 			animalQuery = Session.conn.prepareStatement(
 						"SELECT * "
-					   + "FROM animal a JOIN species s USING (species_name) "
+					   + "FROM animal a "
 					   + "WHERE animal_id = ?");
 			animalQuery.setString(1, animalId);
+			
+			foodQuery = Session.conn.prepareStatement(
+						"SELECT f.food_id, f.name, f.brand, f.quantity "
+						+ "FROM animal a JOIN species_eats se USING (species_name) JOIN food f USING (food_id) "
+						+ "WHERE a.animal_id = ?");
+			foodQuery.setString(1, animalId);
+			
 			//Get animals details and species data
 			animalResult = animalQuery.executeQuery();
+			foodResult = foodQuery.executeQuery();
 			
 			if(animalResult.next())  { //If animal was found
-			
-				int animalColumns[] = {2,3,4,5,6,7}; //columns to display in left table
-				int speciesColumns[] = {1,8,9}; //columns to display in right table
+				int animalColumns[] = {1,2,4,5,6,7,3}; //columns to display in left table
 				
 				//Build the animal and species tables
 				TableBuilder table1 = AsciiTableHelper.getAsciiTable(animalResult, true, animalColumns);
-				TableBuilder table2 = AsciiTableHelper.getAsciiTable(animalResult, true, speciesColumns);
+				TableBuilder table2 = AsciiTableHelper.getAsciiTable(foodResult, false);
 
 				//Add borders and print the two tables inside a double table
 				table1.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
 				table2.addHeaderAndVerticalsBorders(BorderStyle.oldschool);
-				AsciiTableHelper.printDoubleTable(table1, "Animal: ", table2, "Species: ", Session.terminalWidth/2);
+				AsciiTableHelper.printDoubleTable(table1, "Animal: ", table2, "Foods: ", Session.terminalWidth/2);
 
 			} else 
 				System.out.println("No animal found...");
@@ -284,7 +290,9 @@ public class AnimalRepo {
 		} finally { //close everything
 			try {
 				animalResult.close();
+				foodResult.close();
 				animalQuery.close();
+				foodQuery.close();
 			}catch(Exception e) { //If closing errors out
 				Session.log.warning("DB Closing Error: " + e.toString());
 			}
