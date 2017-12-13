@@ -66,7 +66,7 @@ public class AnimalRepo {
 			
 			if(Session.admin) { //If user is admin, show all animals
 				query = Session.conn.prepareStatement(
-						   "SELECT animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
+						   "SELECT DISTINCT(animal_id), a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
 						   + "FROM animal a JOIN species s USING (species_name) "
 						   + "WHERE LOWER(a.animal_id) LIKE ? "
 						   + "OR LOWER(a.name) LIKE ? "
@@ -81,7 +81,7 @@ public class AnimalRepo {
 				
 			} else { //Otherwise just show the animals the current user handles
 				query = Session.conn.prepareStatement(
-						   "SELECT animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
+						   "SELECT DISTINCT(animal_id), a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
 						   + "FROM animal a JOIN species s USING (species_name) JOIN employee_training t USING (species_name)"
 						   + "WHERE t.username = ? AND "
 						   + "(LOWER(a.animal_id) LIKE ? "
@@ -127,7 +127,7 @@ public class AnimalRepo {
 		
 		try {
 			query = Session.conn.prepareStatement(
-					   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
+					   "SELECT DISTINCT(a.animal_id), a.name, s.species_name, s.common_name, a.birthday, a.last_feeding "
 					   + "FROM employee u JOIN employee_training t USING (username) JOIN Animal a USING (species_name) JOIN species s USING (species_name)"
 					   + "WHERE LOWER(u.username) LIKE ? "
 					   + "OR LOWER(u.first_name) LIKE ? "
@@ -167,7 +167,7 @@ public class AnimalRepo {
 		try {
 			if(Session.admin) { //List all results if admin
 				query = Session.conn.prepareStatement(
-						   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding  "
+						   "SELECT DISTINCT(a.animal_id), a.name, s.species_name, s.common_name, a.birthday, a.last_feeding  "
 						   + "FROM animal a JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id)"
 						   + "WHERE LOWER(e.enclosure_id) LIKE ? "
 						   + "OR LOWER(e.name) LIKE ? "
@@ -179,7 +179,7 @@ public class AnimalRepo {
 				
 			} else { //Otherwise, list only the animals the user handles
 				query = Session.conn.prepareStatement(
-						   "SELECT a.animal_id, a.name, s.species_name, s.common_name, a.birthday, a.last_feeding  "
+						   "SELECT DISTINCT(a.animal_id), a.name, s.species_name, s.common_name, a.birthday, a.last_feeding  "
 						   + "FROM animal a JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id) JOIN employee_training t USING (species_name)"
 						   + "WHERE t.username = ? AND "
 						   + "(LOWER(e.enclosure_id) LIKE ? "

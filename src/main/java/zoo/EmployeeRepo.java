@@ -55,7 +55,7 @@ public class EmployeeRepo {
 		
 		try {
 			query = Session.conn.prepareStatement(
-					   "SELECT username, first_name, last_name, email, birthday, salary "
+					   "SELECT DISTINCT(username), first_name, last_name, email, birthday, salary "
 					   + "FROM employee "
 					   + "WHERE LOWER(username) LIKE ? "
 					   + "OR LOWER(first_name) LIKE ? "
@@ -98,7 +98,7 @@ public class EmployeeRepo {
 		
 		try {
 			query = Session.conn.prepareStatement(
-					   "SELECT u.username, u.first_name, u.last_name, u.email, u.birthday, u.salary "
+					   "SELECT DISTINCT(u.username), u.first_name, u.last_name, u.email, u.birthday, u.salary "
 					   + "FROM employee u JOIN employee_training t USING (username) JOIN Animal a USING (species_name) JOIN Species s USING (species_name)"
 					   + "WHERE LOWER(a.animal_id) LIKE ? "
 					   + "OR LOWER(a.name) LIKE ? "
@@ -139,7 +139,7 @@ public class EmployeeRepo {
 		
 		try {
 			query = Session.conn.prepareStatement(
-					   "SELECT u.username, u.first_name, u.last_name, u.email, u.birthday, u.salary "
+					   "SELECT DISTINCT(u.username), u.first_name, u.last_name, u.email, u.birthday, u.salary "
 					   + "FROM employee u JOIN employee_training t USING (username) JOIN species USING (species_name) JOIN enclosure e USING (enclosure_id)"
 					   + "WHERE LOWER(e.enclosure_id) LIKE ? "
 					   + "OR LOWER(e.name) LIKE ? "

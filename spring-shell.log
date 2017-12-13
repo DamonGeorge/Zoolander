@@ -303,3 +303,19 @@
 1513141586426:stats --salaries
 1513141593010:stats --species
 1513141726855:exit
+1513141773855:employees --list
+1513141777350:exit
+1513147063613:employees --search-animal python
+1513147079284:employees --search-animal eagle
+1513147105387:exit
+1513147121373:employees --search-animal eagle
+1513147199265:exit
+1513147216466:employees --search-animal eagle
+1513147221577:employees --search-animal bobby
+1513147228089:employees --search-employee tim
+1513147230841:employees --search-employee ja
+1513147239056:employees --search-enclosure arctic
+1513147247920:animals --search-animal eagle
+1513147257264:animals --search-employee tdog
+1513147266008:animals --search-enclosure swamp
+1513147272224:exit
