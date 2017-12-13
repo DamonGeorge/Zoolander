@@ -291,39 +291,6 @@ public class EmployeeRepo {
     }
     
     /**
-     * TODO: Necessary Function????
-     * Update the given attribute of the given employee
-     * @param username Employee to update
-     * @param attribute Which attribute of User to update
-     * @param value The new value of the attribute 
-     */
-    public static void updateEmployee(String username, String attribute, String value) {
-    	PreparedStatement query = null;
-		
-		try {
-			
-			query = Session.conn.prepareStatement(
-					   "UPDATE employee SET " + attribute + " = ? WHERE username = ?");
-				
-			query.setString(1, value);
-			query.setString(2, username);
-			query.executeUpdate();
-			
-		} catch (Exception e) {
-			Session.log.warning("SQL Error: " + e.toString());
-			System.out.println("Something went wrong!");
-		} finally {
-			//close everything
-			try {
-				query.close();
-			}catch(Exception e) {
-				//If closing errors out
-				Session.log.warning("DB Closing Error: " + e.toString());
-			}
-		}
-    }
-    
-    /**
      * Add new employee
      * @param newValues The array of values starting with username and ending with admin
      */
