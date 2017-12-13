@@ -94,9 +94,9 @@ public class SpeciesRepo {
     	
     	try {
 			query = Session.conn.prepareStatement(
-					   "INSERT INTO species VALUES (?, ?, ?, ?)");
+					   "INSERT INTO species VALUES (?, ?, ?)");
 				
-			for(int i = 1; i <= 4; i++) { //Loop through new values and add each to the query
+			for(int i = 1; i <= 3; i++) { //Loop through new values and add each to the query
 				query.setString(i, newValues[i-1]);
 			}
 

@@ -227,3 +227,79 @@
 1513134613498:help status
 1513134617042:help stats
 1513135319994:exit
+1513136792527:clear
+1513136806894:animals --list
+1513136816606:animals --view 8
+1513136821830:animals --view df
+1513136835669:animals --add
+1513136981107:animals --search-animal bobby
+1513136990410:animals --search-employee bobby
+1513137015594:animals --search-employee anthony
+1513137045658:animals --search-enclosure arctic
+1513137071865:animals --update 102
+1513137074153:animals --update 101
+1513137131192:animals --view 101
+1513137221382:animals --list
+1513137330084:animals view 8
+1513137337868:animals --view 8
+1513137364292:animals --search-employee anthony
+1513137463690:animals --view 101
+1513137677702:exit
+1513137689775:employees
+1513137696018:exit
+1513137849836:employees --list
+1513137860011:employees --view damon
+1513137867003:employees --view bro
+1513139812089:employees --add joseph
+1513139898447:employees --add
+1513139946398:employees --search-employee joseph
+1513139968166:employees --search-animal eagle
+1513139979037:employees --train
+1513139989517:employees --train jtooher3
+1513140035204:employees --view jtooher3
+1513140168201:exit
+1513140185106:employees --view jtooher3
+1513140288751:employees --train jtooher3
+1513140412300:help enclosure
+1513140416524:help enclosures
+1513140420116:enclosures --list
+1513140425931:enclosures --update 1
+1513140432651:enclosures --update 3
+1513140463595:enclosures --update
+1513140489882:enclosures --add
+1513140519033:enclosures --list
+1513140525705:enclosures --open 9
+1513140529889:enclosures --list
+1513140569944:enclosures --add
+1513140640255:food --list
+1513140643975:food --add
+1513140651990:food --add 3ewwedf
+1513140728445:food --add
+1513140776388:food --list
+1513140787508:food --purchase 90
+1513140791420:food --list
+1513140798763:food --feed
+1513140811811:animals --list
+1513140820931:animals --view Bobby
+1513140827986:animals --view 101
+1513140831723:food --feed
+1513140835547:food --feed 101
+1513140842978:food --feed 16
+1513141046926:exit
+1513141061839:food --feed 16
+1513141084261:food --add
+1513141274625:help species
+1513141277281:species --list
+1513141287345:species --info 8
+1513141293193:species --info sus scrofa
+1513141304289:species --info 'sus scrofa'
+1513141324505:species --add
+1513141389528:exit
+1513141406560:species --add
+1513141415854:species --list
+1513141573187:stats --enclosures
+1513141576595:stats --food
+1513141581075:stats --handlers
+1513141586426:stats --salaries
+1513141593010:stats --species
+1513141726855:exit

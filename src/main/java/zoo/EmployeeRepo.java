@@ -188,8 +188,8 @@ public class EmployeeRepo {
 			if(userResult.next())  { //if employee actually exists, get their animals
 				
 				animalQuery = Session.conn.prepareStatement(
-						"SELECT a.animal_id, a.name, a.species_name, e.enclosure_id, e.name, e.open "
-						+ "FROM animal a JOIN employee_training t USING (species_name) JOIN employee u USING (username) JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id) "
+						"SELECT s.species_name, e.enclosure_id, e.name, e.open "
+						+ "FROM employee_training t JOIN employee u USING (username) JOIN species s USING (species_name) JOIN enclosure e USING (enclosure_id) "
 						+ "WHERE u.username = ?");
 				//Execute the query with the employee's username
 				animalQuery.setString(1, username);

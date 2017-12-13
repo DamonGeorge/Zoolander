@@ -111,8 +111,12 @@ public class InputHandler {
 	
 	public static boolean getFoodInfo(String[] values) {
 		values[0] = Session.reader.readLine("Food_ID.........: ");
-		if(!values[0].matches("\\d+") || FoodRepo.foodExists(values[0])){
-			System.out.println("Food of id: " + values[0] + "already exists!");
+		if(!values[0].matches("\\d+")) {
+			System.out.println("Please input a number");
+			return false;
+		}
+		if(FoodRepo.foodExists(values[0])){
+			System.out.println("Food of id: " + values[0] + " already exists!");
 			return false;
 		}
 		values[1] = Session.reader.readLine("Food Name.......: ");
